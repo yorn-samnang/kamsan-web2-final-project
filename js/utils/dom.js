@@ -41,3 +41,49 @@ export function clearElement(element) {
 export function setText(element, text) {
   element.textContent = text;
 }
+
+/** Renders a short loading message in a live region. */
+export function renderLoading(element, message = 'Loading…') {
+  element.replaceChildren(createElement('p', { className: 'loading-message', text: message }));
+  element.setAttribute('aria-busy', 'true');
+}
+
+/** Renders an accessible error message without injecting HTML. */
+export function renderError(element, message = 'Something went wrong. Please try again.') {
+  element.replaceChildren(
+    createElement('p', {
+      className: 'error-message',
+      attributes: { role: 'alert' },
+      text: message,
+    })
+  );
+  element.removeAttribute('aria-busy');
+}
+
+/** Shows a temporary, accessible notification. */
+export function toast(message, { duration = 4000, root = document } = {}) {
+  let region = select('[data-toast-region]', root);
+
+  if (!region) {
+    region = createElement('div', {
+      className: 'toast-region',
+      dataset: { toastRegion: '' },
+      attributes: { 'aria-live': 'polite', 'aria-atomic': 'true' },
+    });
+    (root.body || root).append(region);
+  }
+
+  const notification = createElement('p', { className: 'toast', text: message });
+  region.append(notification);
+
+  if (duration > 0) {
+    window.setTimeout(() => notification.remove(), duration);
+  }
+
+  return notification;
+}
+
+// Short aliases keep feature modules concise and match the project plan terminology.
+export const qs = select;
+export const qsa = selectAll;
+export const createEl = createElement;
