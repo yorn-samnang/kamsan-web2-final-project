@@ -4,7 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initSearchFilter({
     buttonSelector: '.filter-btn[data-region]',
     cardSelector: '.dest-card[data-region]',
+    searchSelector: '#destination-search',
+    clearButtonSelector: '#clear-destination-search',
     noResultsSelector: '#no-results',
+    resultsLabelSelector: '#destination-results-title',
+    searchActiveClass: 'destination-results-active',
     activeClass: 'active',
     allValue: 'all',
   });

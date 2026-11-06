@@ -548,7 +548,7 @@
 .filter-section {
   max-width: 1220px;
   margin: 0 auto;
-  padding: 2rem 2rem 1rem;
+  padding: 2rem 2rem 0;
 }
 
 .category-filter {
@@ -617,7 +617,7 @@
 
 @media (max-width: 900px) {
   .filter-section {
-    padding: 2rem 1.5rem 1rem;
+    padding: 2rem 1.5rem 0;
   }
   .category-filter {
     border-radius: 12px;

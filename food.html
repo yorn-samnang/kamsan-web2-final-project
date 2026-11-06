@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="css/food.css" />
+    <link rel="stylesheet" href="css/search-filter.css" />
   </head>
   <body>
     <!-- ════════════════════════════════════════════════════════
@@ -51,6 +52,17 @@
       </div>
 
       <!-- ── FILTER TABS ───────────────────────────────────────────── -->
+      <div class="search-control">
+        <label class="sr-only" for="food-search">Search Cambodian food</label>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="food-search"
+          type="search"
+          placeholder="Search dishes, ingredients, drinks..."
+          autocomplete="off"
+        />
+        <button id="clear-food-search" class="clear-search" type="button" hidden>Clear</button>
+      </div>
       <div class="filter-bar">
         <button class="filter-pill active" data-filter="all">All Dishes</button>
         <button class="filter-pill" data-filter="main">Main Dishes</button>
@@ -58,6 +70,8 @@
         <button class="filter-pill" data-filter="snack">Street Snacks</button>
         <button class="filter-pill" data-filter="drink">Drinks &amp; Sweets</button>
       </div>
+      <h2 id="food-results-title" class="food-results-title reveal" hidden></h2>
+      <div id="food-filter-results" class="food-filter-results" hidden></div>
 
       <!-- ── FEATURED DISHES ──────────────────────────────────────── -->
       <section class="page-section" id="food-to-try">
@@ -159,14 +173,14 @@
             </div>
           </article>
 
-          <article class="food-photo-card reveal" data-category="snack">
+          <article class="food-photo-card reveal" data-category="main">
             <img
               src="images/food/bai-sach-chrouk.jpg"
               alt="Bai Sach Chrouk pork rice"
               loading="lazy"
             />
             <div class="food-card-copy">
-              <span class="food-card-tag">Street Snack</span>
+              <span class="food-card-tag">Main Dish</span>
               <h3>Bai Sach Chrouk</h3>
               <p>
                 Thin slices of grilled pork marinated in coconut milk served over broken rice — the
@@ -204,7 +218,7 @@
           </p>
         </div>
         <div class="mini-cards-grid">
-          <article class="mini-food-card reveal">
+          <article class="mini-food-card reveal" data-category="drink">
             <img
               class="mini-food-card-img"
               src="images/food/palm-sugar-dessert.jpg"
@@ -221,7 +235,7 @@
             </div>
           </article>
 
-          <article class="mini-food-card reveal">
+          <article class="mini-food-card reveal" data-category="drink">
             <img
               class="mini-food-card-img"
               src="images/food/cambodian-dessert.jpg"
@@ -239,7 +253,7 @@
             </div>
           </article>
 
-          <article class="mini-food-card reveal">
+          <article class="mini-food-card reveal" data-category="drink">
             <img
               class="mini-food-card-img"
               src="images/food/dessert.jpg"
@@ -253,7 +267,7 @@
             </div>
           </article>
 
-          <article class="mini-food-card reveal">
+          <article class="mini-food-card reveal" data-category="drink">
             <img
               class="mini-food-card-img"
               src="images/food/sankhya-lapov.jpg"
@@ -515,14 +529,14 @@
         </div>
 
         <div class="food-photo-grid">
-          <article class="food-photo-card reveal" data-category="main">
+          <article class="food-photo-card reveal" data-category="snack">
             <img
               src="images/food/ang-dtray-meuk.jpg"
               alt="Grilled Squid Cambodian seafood"
               loading="lazy"
             />
             <div class="food-card-copy">
-              <span class="food-card-tag">Main Dish</span>
+              <span class="food-card-tag">Street Snack</span>
               <h3>Grilled Squid (Ang Dtray-meuk)</h3>
               <p>
                 Fresh squid grilled over charcoal and served with lime and Kampot pepper sauce —
@@ -547,14 +561,14 @@
             </div>
           </article>
 
-          <article class="food-photo-card reveal" data-category="main">
+          <article class="food-photo-card reveal" data-category="snack">
             <img
               src="images/food/garlic-butter-prawns.jpg"
               alt="Garlic Butter Prawns Cambodian seafood"
               loading="lazy"
             />
             <div class="food-card-copy">
-              <span class="food-card-tag">Main Dish</span>
+              <span class="food-card-tag">Street Snack</span>
               <h3>Garlic Butter Prawns</h3>
               <p>Large prawns sautéed in garlic and butter — simple but incredibly flavourful.</p>
             </div>
@@ -625,6 +639,8 @@
           </article>
         </div>
       </section>
+
+      <p id="no-results" class="no-results" hidden>No food found. Try a different search.</p>
 
       <!-- ── STREET FOOD ───────────────────────────────────────────── -->
       <section class="page-section section-no-top">

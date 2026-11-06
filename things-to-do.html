@@ -5,6 +5,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="css/home.css" />
     <link rel="stylesheet" href="css/things-to-do.css" />
+    <link rel="stylesheet" href="css/search-filter.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
@@ -43,6 +44,17 @@
 
     <!-- CATEGORY FILTER -->
     <section class="filter-section" id="things-to-do-grid">
+      <div class="search-control reveal">
+        <label class="sr-only" for="activity-search">Search activities</label>
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="activity-search"
+          type="search"
+          placeholder="Search temples, islands, food..."
+          autocomplete="off"
+        />
+        <button id="clear-activity-search" class="clear-search" type="button" hidden>Clear</button>
+      </div>
       <div class="category-filter reveal" role="group" aria-label="Filter by category">
         <span class="filter-label">Filter by Activity</span>
         <button class="filter-btn active" data-filter="all">All</button>
@@ -55,6 +67,8 @@
         <button class="filter-btn" data-filter="nightlife">Nightlife</button>
         <button class="filter-btn" data-filter="unique">Unique Experiences</button>
       </div>
+      <h2 id="things-results-title" class="search-results-title" hidden></h2>
+      <div id="things-filter-results" class="things-filter-results" hidden></div>
     </section>
 
     <section id="top-picks" class="top-picks" data-category="top-picks">

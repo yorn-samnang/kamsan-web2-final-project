@@ -6,6 +6,7 @@
     <title>Destinations - Kamsan Cambodia Travel Guide</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="css/destinations.css" />
+    <link rel="stylesheet" href="css/search-filter.css" />
   </head>
   <body>
     <header>
@@ -88,6 +89,19 @@
         </div>
 
         <!-- REGION FILTER -->
+        <div class="search-control reveal">
+          <label class="sr-only" for="destination-search">Search destinations</label>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            id="destination-search"
+            type="search"
+            placeholder="Search destinations, temples, beaches..."
+            autocomplete="off"
+          />
+          <button id="clear-destination-search" class="clear-search" type="button" hidden>
+            Clear
+          </button>
+        </div>
         <div class="region-filter reveal" role="group" aria-label="Filter by region">
           <span class="filter-label">Filter by Region</span>
           <button class="filter-btn active" data-region="all">All</button>
@@ -98,6 +112,8 @@
           <button class="filter-btn" data-region="north">North</button>
         </div>
       </section>
+
+      <h2 id="destination-results-title" class="search-results-title" hidden></h2>
 
       <!-- DESTINATIONS GRID -->
       <section class="dest-grid-section">
