@@ -61,10 +61,13 @@ Use Node 20 to match CI. If you use a version manager, `.nvmrc` selects it.
 ```bash
 npm ci
 npm run check
-python -m http.server
 ```
 
-Open `http://localhost:8000` in a browser. Run the check command before committing:
+In VS Code, open `index.html` with the Live Preview extension. Then visit `http://127.0.0.1:3000/destinations.html?vscode-livepreview=true` to use weather and reviews. The extension may choose a different port on another computer.
+
+You can also run `python3 -m http.server 8000` and open `http://127.0.0.1:8000`. Do not open the HTML files directly with a `file://` URL: browsers block the site's JavaScript modules in that mode.
+
+Run the check command before committing:
 
 ```bash
 npm run check
@@ -74,4 +77,4 @@ It verifies Prettier formatting, ESLint rules, and Jest tests. A pre-commit hook
 
 ## Project Status
 
-The static pages and shared client-side interactions are in place. The Web II feature modules are organized in `js/` and are the next development phase; API integration, CRUD, persistence, and the remaining interactive features still need implementation.
+The static pages, search and filtering, current weather for four destinations, and browser-saved tourist reviews are in place. Reviews use readable sample content and JSONPlaceholder for demo HTTP requests; they are not shared between visitors. Favorites, the trip planner, and the optional quiz still need implementation. See `doc/Web-II-Proposal-Implementation-Status.md` for the detailed status.

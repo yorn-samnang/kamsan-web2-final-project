@@ -45,7 +45,7 @@ function createWeatherCard(weather) {
 
   const updated = createElement('p', {
     className: 'weather-updated',
-    text: `Updated: ${new Date(weather.observedAt).toLocaleString()}`,
+    text: `Updated: ${weather.observedAt.replace('T', ' ')} (destination local time)`,
   });
   card.append(heading, condition, list, updated);
   return card;

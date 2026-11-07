@@ -43,6 +43,38 @@ describe('weather feature', () => {
     weather.destroy();
   });
 
+  test('updates the weather when a different destination is selected', async () => {
+    document.body.innerHTML = `
+      <section data-weather>
+        <label for="destination">Destination</label>
+        <select id="destination" data-weather-destination>
+          <option value="phnom-penh">Phnom Penh</option>
+          <option value="siem-reap">Siem Reap</option>
+        </select>
+        <div data-weather-content aria-live="polite"></div>
+      </section>
+    `;
+    const selected = [];
+    const getWeather = async (destinationId) => {
+      selected.push(destinationId);
+      return {
+        ...currentWeather,
+        destination: destinationId === 'siem-reap' ? 'Siem Reap' : 'Phnom Penh',
+      };
+    };
+    const weather = initWeather({ getWeather });
+    await weather.load();
+
+    const destination = document.querySelector('#destination');
+    destination.value = 'siem-reap';
+    destination.dispatchEvent(new Event('change'));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(selected).toContain('siem-reap');
+    expect(document.querySelector('.weather-card')?.textContent).toContain('Weather in Siem Reap');
+    weather.destroy();
+  });
+
   test('maps Open-Meteo weather codes to readable labels', () => {
     expect(getWeatherDescription(95)).toBe('Thunderstorm');
     expect(getWeatherDescription(999)).toBe('Unknown conditions');

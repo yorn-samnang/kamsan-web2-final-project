@@ -666,6 +666,219 @@
   font-size: 1.05rem;
 }
 
+/* Current weather */
+.destination-weather-section {
+  padding: 36px 0;
+}
+
+.destination-weather-panel {
+  padding: 32px;
+  border: 1px solid rgba(23, 55, 57, 0.1);
+  border-radius: 28px;
+  background: #f7fbfa;
+  box-shadow: var(--shadow-soft);
+}
+
+.destination-weather-panel h2,
+.weather-card h3 {
+  margin: 0 0 10px;
+  color: var(--text-strong);
+}
+
+.destination-weather-panel p {
+  color: var(--text-body);
+}
+
+.destination-weather-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+  margin: 20px 0;
+  font-weight: 600;
+}
+
+.destination-weather-control select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(23, 55, 57, 0.25);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-strong);
+  font: inherit;
+}
+
+.destination-weather-content {
+  min-height: 80px;
+}
+
+.weather-card {
+  padding: 20px;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.weather-condition {
+  margin: 0 0 16px;
+}
+
+.weather-details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 20px;
+  margin: 0;
+}
+
+.weather-details dt {
+  font-weight: 600;
+}
+
+.weather-details dd {
+  margin: 0;
+}
+
+.destination-weather-panel .weather-updated,
+.destination-weather-panel .destination-weather-credit {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+}
+
+.destination-weather-credit a {
+  color: var(--text-strong);
+}
+
+/* Tourist reviews */
+.reviews-section {
+  padding: 0 0 36px;
+  scroll-margin-top: 120px;
+}
+
+.detail-review-link {
+  margin-top: 22px;
+}
+
+.reviews-panel {
+  padding: 32px;
+  border: 1px solid rgba(23, 55, 57, 0.1);
+  border-radius: 28px;
+  background: #f7fbfa;
+  box-shadow: var(--shadow-soft);
+}
+
+.reviews-panel h2,
+.reviews-panel h3,
+.review-card h4 {
+  margin: 0 0 10px;
+  color: var(--text-strong);
+}
+
+.reviews-panel > p,
+.review-card p {
+  color: var(--text-body);
+  line-height: 1.6;
+}
+
+.review-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 16px;
+}
+
+.review-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.review-fields input,
+.review-fields select,
+.review-fields textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(23, 55, 57, 0.25);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-strong);
+  font: inherit;
+}
+
+.review-comment-field {
+  grid-column: 1 / -1;
+}
+
+.review-form-actions,
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.review-form-actions [hidden] {
+  display: none;
+}
+
+.reviews-panel .review-note {
+  margin: 18px 0 8px;
+  font-size: 0.85rem;
+}
+
+.review-status {
+  min-height: 1.5em;
+}
+
+.review-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.review-card {
+  padding: 20px;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.review-card .review-details {
+  margin: 0;
+  font-weight: 600;
+}
+
+.review-action-button {
+  padding: 8px 14px;
+  border: 1px solid rgba(23, 55, 57, 0.25);
+  border-radius: 8px;
+  background: #f7fbfa;
+  color: var(--text-strong);
+  font: inherit;
+  cursor: pointer;
+}
+
+.review-action-button:hover,
+.review-action-button:focus-visible {
+  background: #e8f2f0;
+}
+
+@media (max-width: 900px) {
+  .review-fields,
+  .review-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .reviews-panel {
+    padding: 22px;
+  }
+
+  .review-fields,
+  .review-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ============================================================
    DESTINATIONS PAGE — BOTTOM CTA
    ============================================================ */

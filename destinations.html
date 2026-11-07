@@ -56,6 +56,7 @@
             </p>
             <div class="dest-hero-actions">
               <a href="#destinations-grid" class="btn btn-primary">Browse Destinations</a>
+              <a href="#tourist-reviews" class="btn btn-secondary">Read Tourist Reviews</a>
             </div>
           </div>
         </div>
@@ -662,6 +663,111 @@
         </div>
       </section>
 
+      <!-- CURRENT WEATHER -->
+      <section class="destination-weather-section" data-weather>
+        <div class="destination-weather-panel">
+          <div>
+            <p class="eyebrow">Current weather</p>
+            <h2>Check the weather before you go</h2>
+            <p>Choose a destination to see its current conditions.</p>
+          </div>
+          <div class="destination-weather-control">
+            <label for="weather-destination">Destination</label>
+            <select id="weather-destination" data-weather-destination>
+              <option value="phnom-penh">Phnom Penh</option>
+              <option value="siem-reap">Siem Reap</option>
+              <option value="kampot">Kampot</option>
+              <option value="koh-rong">Koh Rong</option>
+            </select>
+          </div>
+          <div class="destination-weather-content" data-weather-content aria-live="polite"></div>
+          <p class="destination-weather-credit">
+            Weather data from <a href="https://open-meteo.com/">Open-Meteo</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- TOURIST REVIEWS -->
+      <section class="reviews-section" id="tourist-reviews" data-reviews>
+        <div class="reviews-panel">
+          <p class="eyebrow">Tourist reviews</p>
+          <h2>Share your Cambodia experience</h2>
+          <p>
+            The first reviews are written examples for this class project. Your reviews are saved in
+            this browser, so other visitors will not see them.
+          </p>
+
+          <form id="review-form" novalidate>
+            <div class="review-fields">
+              <label>
+                Your name
+                <input name="name" type="text" maxlength="60" required />
+              </label>
+              <label>
+                Destination
+                <select name="destination" required>
+                  <option value="">Choose a destination</option>
+                  <option>Banteay Meanchey</option>
+                  <option>Battambang</option>
+                  <option>Kampong Cham</option>
+                  <option>Kampong Chhnang</option>
+                  <option>Kampong Speu</option>
+                  <option>Kampong Thom</option>
+                  <option>Kampot</option>
+                  <option>Kandal</option>
+                  <option>Kep</option>
+                  <option>Koh Kong</option>
+                  <option>Kratie</option>
+                  <option>Mondulkiri</option>
+                  <option>Oddar Meanchey</option>
+                  <option>Pailin</option>
+                  <option>Phnom Penh</option>
+                  <option>Preah Sihanouk</option>
+                  <option>Preah Vihear</option>
+                  <option>Prey Veng</option>
+                  <option>Pursat</option>
+                  <option>Ratanakiri</option>
+                  <option>Siem Reap</option>
+                  <option>Stung Treng</option>
+                  <option>Svay Rieng</option>
+                  <option>Takeo</option>
+                  <option>Tbong Khmum</option>
+                </select>
+              </label>
+              <label>
+                Rating
+                <select name="rating" required>
+                  <option value="">Choose a rating</option>
+                  <option value="5">5 stars</option>
+                  <option value="4">4 stars</option>
+                  <option value="3">3 stars</option>
+                  <option value="2">2 stars</option>
+                  <option value="1">1 star</option>
+                </select>
+              </label>
+              <label class="review-comment-field">
+                Comment
+                <textarea name="comment" rows="4" maxlength="500" required></textarea>
+              </label>
+            </div>
+            <div class="review-form-actions">
+              <button class="btn btn-primary" type="submit">Post review</button>
+              <button class="btn btn-secondary" type="button" data-cancel-edit hidden>
+                Cancel edit
+              </button>
+            </div>
+          </form>
+
+          <p class="review-note">
+            This is a demo: the form sends requests to JSONPlaceholder, which does not save changes.
+            A copy is kept in this browser. Please do not enter private information.
+          </p>
+          <p class="review-status" data-review-status role="status" aria-live="polite"></p>
+          <h3><span data-review-count>0 reviews</span></h3>
+          <div class="review-list" data-review-list></div>
+        </div>
+      </section>
+
       <!-- BOTTOM CTA BANNER -->
       <section class="dest-cta-section">
         <div class="dest-cta-card reveal">
@@ -721,6 +827,13 @@
       </div>
     </footer>
 
+    <script>
+      if (window.location.protocol === 'file:') {
+        document.querySelector('[data-review-status]').textContent =
+          'Reviews need a local web server. Run python3 -m http.server 8000, then open http://localhost:8000/destinations.html.';
+        document.querySelector('#review-form button[type="submit"]').disabled = true;
+      }
+    </script>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/main-destinations.js"></script>
   </body>
