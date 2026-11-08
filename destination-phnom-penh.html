@@ -65,6 +65,9 @@
 
       <!-- DESTINATION HERO -->
       <section class="detail-hero">
+        <span class="dest-rating dest-rating--detail" aria-label="Rated 4.0 out of 5 stars, 1 review">
+          <span class="dest-rating-stars" aria-hidden="true">★★★★☆</span>
+        </span>
         <div class="detail-hero-overlay">
           <div class="detail-hero-content">
             <div class="detail-hero-meta">
@@ -77,9 +80,6 @@
               Sap rivers. A city where royal grandeur, painful history, bustling markets, and a
               thriving modern scene all coexist in one unforgettable place.
             </p>
-            <a href="destinations.html#tourist-reviews" class="btn btn-secondary detail-review-link"
-              >Read Tourist Reviews</a
-            >
             <div class="detail-hero-info">
               <div class="detail-info-item">
                 <span class="info-label">Best For</span>
@@ -456,6 +456,29 @@
         </div>
       </section>
 
+      <!-- TOURIST REVIEWS
+      <section
+        class="reviews-section detail-reviews-section"
+        id="tourist-reviews"
+        data-reviews
+        data-destination="Phnom Penh"
+      >
+        <div class="reviews-panel">
+          <p class="eyebrow">Tourist reviews</p>
+          <h2>Reviews of Phnom Penh</h2>
+          <p>Share your experience in Phnom Penh. Your review is saved in this browser.</p>
+          <button class="btn btn-primary" type="button" data-open-review>Post Review</button>
+
+          <p class="review-note">
+            This is a demo: the form sends requests to JSONPlaceholder, which does not save changes.
+            A copy is kept in this browser. Please do not enter private information.
+          </p>
+          <p class="review-status" data-review-status role="status" aria-live="polite"></p>
+          <h3><span data-review-count>0 reviews</span></h3>
+          <div class="review-list" data-review-list></div>
+        </div>
+      </section> -->
+
       <!-- BOTTOM NAV -->
       <section class="detail-nav-section">
         <div class="detail-nav-row reveal">
@@ -530,5 +553,6 @@
     </footer>
 
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main-destination-detail.js"></script>
   </body>
 </html>

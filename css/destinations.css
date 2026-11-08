@@ -499,10 +499,161 @@
     border-color 0.36s ease;
 }
 
+.favorite-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(23, 55, 57, 0.15);
+  border-radius: 50%;
+  background: white;
+  color: #b3344a;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-button svg {
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.favorite-button[aria-pressed='true'] svg {
+  fill: currentColor;
+}
+
+.favorite-button:hover {
+  background: #fff2f4;
+}
+
+.favorite-delete {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-strong);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-delete:hover {
+  color: #b3344a;
+  background: white;
+}
+
+.favorite-button:focus-visible,
+.favorite-delete:focus-visible,
+.favorite-remove:focus-visible {
+  outline: 3px solid #173739;
+  outline-offset: 2px;
+}
+
+.favorite-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 48px);
+  padding: 14px 20px 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(174, 220, 214, 0.48), transparent 55%),
+    linear-gradient(135deg, rgba(255, 250, 241, 0.88), rgba(229, 243, 240, 0.76));
+  color: var(--text-strong);
+  font-weight: 700;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -8px 16px rgba(210, 235, 233, 0.3),
+    0 18px 40px rgba(28, 52, 54, 0.18);
+  backdrop-filter: blur(20px) saturate(145%);
+  -webkit-backdrop-filter: blur(20px) saturate(145%);
+  animation: favorite-toast-in 0.3s ease-out;
+}
+
+.favorite-toast::before {
+  content: '✓';
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--text-strong);
+  color: white;
+  font-size: 1rem;
+}
+
+.favorite-toast[data-tone='error'] {
+  border-color: rgba(179, 52, 74, 0.3);
+  background: #fff1f3;
+}
+
+.favorite-toast[data-tone='error']::before {
+  content: '!';
+  background: #b3344a;
+}
+
+@keyframes favorite-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.favorite-toast[hidden] {
+  display: none;
+}
+
+.favorites-page {
+  max-width: 1200px;
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+.favorites-page h1 {
+  color: var(--text-strong);
+}
+
+.favorites-page .detail-breadcrumb {
+  margin-bottom: 20px;
+}
+
+.favorites-page .dest-grid {
+  margin-top: 24px;
+}
+
 .dest-card:hover {
-  transform: translateY(-8px);
   box-shadow: var(--shadow-hover);
   border-color: rgba(23, 55, 57, 0.12);
+}
+
+.dest-card.reveal {
+  transform: none;
 }
 
 .dest-card-link {
@@ -641,6 +792,242 @@
   padding-top: 16px;
 }
 
+/* Star-rating badge — bottom-right corner of the card image */
+.dest-rating {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 30, 32, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #f5c518;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+  cursor: default;
+  user-select: none;
+}
+
+.dest-rating-stars {
+  display: inline-block;
+  line-height: 1;
+}
+
+.dest-card .dest-rating {
+  pointer-events: none;
+}
+
+.dest-rating--empty .dest-rating-stars {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---- Hover tooltip ---- */
+.dest-rating-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 200px;
+  padding: 14px 14px 10px;
+  border-radius: 16px;
+  background: rgba(10, 26, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.36);
+  color: #e8f4f2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* Arrow pointing down at the badge */
+.dest-rating-tip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: 14px;
+  width: 10px;
+  height: 6px;
+  background: rgba(10, 26, 28, 0.92);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+/* Transparent bridge covering the gap so the tooltip stays open on mouse move */
+.dest-rating-tip::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.dest-rating-tip.is-visible {
+  position: fixed;
+  bottom: auto;
+  right: auto;
+  z-index: 1999;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.drt-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drt-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f5c518;
+  letter-spacing: 0;
+}
+
+.drt-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(232, 244, 242, 0.6);
+  letter-spacing: 0;
+}
+
+.drt-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drt-row {
+  display: grid;
+  grid-template-columns: 22px 1fr 32px;
+  align-items: center;
+  gap: 7px;
+}
+
+.drt-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(232, 244, 242, 0.65);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.drt-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.drt-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #f5c518;
+  transition: width 0.4s ease;
+}
+
+.drt-pct {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(232, 244, 242, 0.55);
+  text-align: right;
+}
+
+/* ---- Action buttons ---- */
+.drt-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drt-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(232, 244, 242, 0.82);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease;
+  white-space: nowrap;
+}
+
+.drt-action-btn:hover,
+.drt-action-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.drt-action-btn:focus-visible {
+  outline: 2px solid #f5c518;
+  outline-offset: 2px;
+}
+
+.drt-action-post:hover,
+.drt-action-post:focus-visible {
+  background: rgba(245, 197, 24, 0.18);
+  color: #f5c518;
+  border-color: rgba(245, 197, 24, 0.4);
+}
+
+.drt-action-read:hover,
+.drt-action-read:focus-visible {
+  background: rgba(174, 220, 214, 0.15);
+  color: #aedcd6;
+  border-color: rgba(174, 220, 214, 0.35);
+}
+
+.dest-rating--empty {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* On the detail hero the overlay has overflow:hidden, so the badge is a sibling
+   of .detail-hero-overlay and positioned relative to .detail-hero instead.
+   bottom/right account for .detail-hero's padding (18px bottom, 24px right). */
+.dest-rating--detail {
+  bottom: 38px;  /* 18px padding + 20px inset from image edge */
+  right: 44px;   /* 24px padding + 20px inset from image edge */
+  font-size: 1.08rem;
+  padding: 6px 14px;
+  z-index: 3;
+}
+
+.dest-rating--detail .dest-rating-tip {
+  bottom: calc(100% + 10px);
+  right: 0;
+}
+
 .dest-explore {
   display: inline-flex;
   align-items: center;
@@ -751,6 +1138,12 @@
 .reviews-section {
   padding: 0 0 36px;
   scroll-margin-top: 120px;
+}
+
+.detail-reviews-section {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 36px 24px;
 }
 
 .detail-review-link {
@@ -972,6 +1365,7 @@
   max-width: 1220px;
   margin: 0 auto;
   padding: 14px 24px 18px;
+  position: relative;
 }
 
 .detail-hero-overlay {
@@ -1704,5 +2098,409 @@
   .reveal.is-visible {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* ============================================================
+   REVIEW MODAL
+   ============================================================ */
+
+/* Overlay */
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(5, 18, 20, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: rmo-fade 0.18s ease both;
+}
+
+@keyframes rmo-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Panel */
+.review-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  max-height: 86vh;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 72px rgba(5, 18, 20, 0.22), 0 2px 8px rgba(5, 18, 20, 0.08);
+  overflow: hidden;
+  text-align: left;
+  animation: rmo-rise 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rmo-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Header ---- */
+.rmo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid #f0f4f4;
+  flex-shrink: 0;
+}
+
+.rmo-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rmo-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f2628;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.rmo-close {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f2f6f6;
+  color: #4a6e70;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.rmo-close:hover {
+  background: #e4eded;
+  color: #0f2628;
+}
+
+/* ---- Scrollable body ---- */
+.rmo-body {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #d4e4e4 transparent;
+}
+
+/* ---- Form section ---- */
+.rmo-form-section {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #f0f4f4;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.rmo-section-title {
+  margin: 0 0 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #517476;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  align-self: stretch;
+}
+
+.rmo-field {
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  align-self: stretch;
+}
+
+.rmo-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #3d6163;
+}
+
+.rmo-input,
+.rmo-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #e0eaeb;
+  background: #f8fbfb;
+  color: #0f2628;
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+}
+
+.rmo-input:focus,
+.rmo-textarea:focus {
+  outline: none;
+  border-color: #3a7375;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(58, 115, 117, 0.12);
+}
+
+.rmo-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Star picker */
+.rmo-star-picker {
+  display: flex;
+  gap: 2px;
+  padding: 2px 0;
+}
+
+.rmo-star {
+  font-size: 1.65rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 2px 3px;
+  color: #dde8e9;
+  cursor: pointer;
+  transition: color 0.1s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.rmo-star.active {
+  color: #f5c518;
+}
+
+.rmo-star:hover {
+  transform: scale(1.18);
+}
+
+/* Form actions */
+.rmo-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  align-self: stretch;
+}
+
+.rmo-submit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: none;
+  background: #1b4b4d;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.14s ease, transform 0.14s ease;
+}
+
+.rmo-submit:hover:not(:disabled) {
+  background: #153e40;
+  transform: translateY(-1px);
+}
+
+.rmo-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.rmo-cancel-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1.5px solid #e0eaeb;
+  background: transparent;
+  color: #517476;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.rmo-cancel-edit:hover {
+  background: #f2f6f6;
+  border-color: #c8d8d9;
+}
+
+.rmo-status {
+  flex: 1;
+  font-size: 0.78rem;
+  color: #517476;
+  min-height: 1em;
+}
+
+/* ---- Reviews list section ---- */
+.rmo-list-section {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rmo-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.rmo-list-heading .rmo-section-title {
+  margin: 0;
+}
+
+.rmo-list-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #93b0b2;
+}
+
+.rmo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rmo-empty {
+  margin: 0;
+  padding: 20px 16px;
+  color: #93b0b2;
+  font-size: 0.88rem;
+  border-radius: 12px;
+  border: 1.5px dashed #dde8e9;
+  background: #f8fbfb;
+  text-align: left;
+}
+
+/* Review card */
+.rmo-review-card {
+  padding: 13px 15px;
+  border-radius: 14px;
+  border: 1.5px solid #edf3f3;
+  background: #fafcfc;
+  transition: border-color 0.14s ease;
+}
+
+.rmo-review-card.is-own {
+  border-color: #c6dfe0;
+  background: #f2f8f8;
+}
+
+.rmo-review-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.rmo-mine-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(27, 75, 77, 0.1);
+  color: #1b4b4d;
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rmo-review-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0f2628;
+}
+
+.rmo-review-stars {
+  margin-left: auto;
+  color: #f5c518;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  flex-shrink: 0;
+}
+
+.rmo-review-comment {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #517476;
+  line-height: 1.65;
+}
+
+.rmo-review-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.rmo-review-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1.5px solid #e0eaeb;
+  background: transparent;
+  color: #517476;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease;
+}
+
+.rmo-review-btn.edit:hover {
+  background: rgba(27, 75, 77, 0.07);
+  color: #1b4b4d;
+  border-color: #a4c4c5;
+}
+
+.rmo-review-btn.delete:hover {
+  background: rgba(179, 52, 74, 0.06);
+  color: #b3344a;
+  border-color: #e8b0bb;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 520px) {
+  .review-modal {
+    max-height: 94vh;
+    border-radius: 20px;
+  }
+
+  .rmo-header {
+    padding: 14px 16px 13px;
+  }
+
+  .rmo-form-section,
+  .rmo-list-section {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

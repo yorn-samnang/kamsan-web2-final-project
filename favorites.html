@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favorite Destinations - Kamsan</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/destinations.css" />
+  </head>
+  <body>
+    <header>
+      <div class="nav-shell">
+        <a href="index.html" class="brand-mark" aria-label="Kamsan home"></a>
+        <div class="nav-pill">
+          <div class="brand-copy">
+            <a href="index.html" class="brand-title">Kamsan</a>
+            <span class="brand-tagline">Cambodia Travel Guide</span>
+          </div>
+          <button
+            class="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Toggle navigation"
+          >
+            <span></span><span></span><span></span>
+          </button>
+          <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+            <a href="index.html">Home</a>
+            <a href="destinations.html" class="active">Destinations</a>
+            <a href="food.html">Food</a>
+            <a href="things-to-do.html">Things to Do</a>
+            <a href="travel-guide.html">Travel Guide</a>
+            <a href="contact.html">About &amp; Contact</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <main class="favorites-page">
+      <nav class="detail-breadcrumb" aria-label="Breadcrumb">
+        <a href="destinations.html" class="breadcrumb-back">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path
+              d="M13 8H3M7 12l-4-4 4-4"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          All Destinations
+        </a>
+      </nav>
+      <h1>Favorite Destinations</h1>
+      <p>Your saved places are kept in this browser.</p>
+      <p id="favorites-status" role="status"></p>
+      <div id="favorites-list" class="dest-grid"></div>
+    </main>
+    <div id="favorite-toast" class="favorite-toast" role="status" aria-live="polite" hidden></div>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main-favorites.js"></script>
+  </body>
+</html>

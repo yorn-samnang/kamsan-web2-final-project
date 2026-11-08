@@ -1,6 +1,5 @@
 import { initSearchFilter } from './features/searchFilter.js';
 import { initWeather } from './features/weather.js';
-import { initReviews } from './features/touristReviews.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initSearchFilter({
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   initWeather();
-  initReviews();
 
   // Only Phnom Penh detail page exists for now; keep other cards view-only.
   document.querySelectorAll('.dest-card-link').forEach((link) => {

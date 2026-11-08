@@ -10,6 +10,7 @@ The application helps tourists explore Cambodian destinations, food, activities,
 
 - `index.html` — home page, trip planner, and optional recommendation quiz
 - `destinations.html` — destination discovery, weather, search, and favorites
+- `favorites.html` — saved favorite destinations
 - `food.html` — Khmer food browsing and filtering
 - `things-to-do.html` — activity discovery and filtering
 - `travel-guide.html` — transport, timing, and practical visitor guidance
@@ -63,7 +64,7 @@ npm ci
 npm run check
 ```
 
-In VS Code, open `index.html` with the Live Preview extension. Then visit `http://127.0.0.1:3000/destinations.html?vscode-livepreview=true` to use weather and reviews. The extension may choose a different port on another computer.
+In VS Code, open `index.html` with the Live Preview extension. Then visit `http://127.0.0.1:3000/destinations.html?vscode-livepreview=true` for weather and destination ratings. The Phnom Penh detail page has the review form. The extension may choose a different port on another computer.
 
 You can also run `python3 -m http.server 8000` and open `http://127.0.0.1:8000`. Do not open the HTML files directly with a `file://` URL: browsers block the site's JavaScript modules in that mode.
 
@@ -77,4 +78,4 @@ It verifies Prettier formatting, ESLint rules, and Jest tests. A pre-commit hook
 
 ## Project Status
 
-The static pages, search and filtering, current weather for four destinations, and browser-saved tourist reviews are in place. Reviews use readable sample content and JSONPlaceholder for demo HTTP requests; they are not shared between visitors. Favorites, the trip planner, and the optional quiz still need implementation. See `doc/Web-II-Proposal-Implementation-Status.md` for the detailed status.
+The static pages, search and filtering, current weather for four destinations, favorite destinations, and browser-saved tourist reviews are in place. Reviews use readable sample content and JSONPlaceholder for demo HTTP requests; they are not shared between visitors. The trip planner and optional quiz still need implementation. See `doc/Web-II-Proposal-Implementation-Status.md` for the detailed status.

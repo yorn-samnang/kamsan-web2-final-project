@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { initReviews } from '../js/features/touristReviews.js';
+import { initCardRatings, initDetailRating, initReviews } from '../js/features/touristReviews.js';
 
 function response(body) {
   return {
@@ -55,6 +55,75 @@ describe('tourist reviews', () => {
       'Angkor Wat at sunrise'
     );
     expect(global.fetch.mock.calls[0][0]).toContain('/posts?_limit=3');
+  });
+
+  test('shows a destination rating on its card', () => {
+    document.body.innerHTML = `
+      <article class="dest-card"><div class="dest-photo-wrap"><span class="dest-rating">Fallback</span></div><h3 class="dest-name">Phnom Penh</h3></article>
+      <article class="dest-card"><div class="dest-photo-wrap"><span class="dest-rating">Fallback</span></div><h3 class="dest-name">Kep</h3></article>
+    `;
+    initCardRatings();
+    const badges = document.querySelectorAll('.dest-rating');
+    expect(badges).toHaveLength(2);
+    expect(badges[0].querySelector('.dest-rating-stars').textContent).toBe('★★★★☆');
+    expect(badges[1].querySelector('.dest-rating-stars').textContent).toBe('☆☆☆☆☆');
+    expect(document.querySelector('.dest-card .dest-rating-tip')).toBeNull();
+    expect(badges[0].hasAttribute('tabindex')).toBe(false);
+  });
+
+  test('ignores malformed saved reviews without stopping card setup', () => {
+    localStorage.setItem('kamsan:reviews', '[null]');
+    document.body.innerHTML = `
+      <article class="dest-card"><div class="dest-photo-wrap"></div><h3 class="dest-name">Phnom Penh</h3></article>
+    `;
+    expect(() => initCardRatings()).not.toThrow();
+    expect(document.querySelector('.dest-rating-stars').textContent).toBe('☆☆☆☆☆');
+  });
+
+  test('replaces the detail hero fallback rating', () => {
+    document.body.innerHTML = `
+      <section class="detail-hero"><span class="dest-rating dest-rating--detail">Fallback</span></section>
+      <section data-reviews data-destination="Phnom Penh"></section>
+    `;
+    initDetailRating();
+    const badges = document.querySelectorAll('.dest-rating--detail');
+    expect(badges).toHaveLength(1);
+    expect(badges[0].querySelector('.dest-rating-stars').textContent).toBe('★★★★☆');
+  });
+
+  test('opens rating details on the destination detail hero only', async () => {
+    document.body.innerHTML = `
+      <article class="dest-card"><div class="dest-photo-wrap"></div><h3 class="dest-name">Phnom Penh</h3></article>
+      <section class="detail-hero"></section>
+      <section data-reviews data-destination="Phnom Penh"></section>
+    `;
+    initCardRatings();
+    initDetailRating();
+
+    const cardBadge = document.querySelector('.dest-card .dest-rating');
+    cardBadge.dispatchEvent(new Event('mouseenter'));
+    expect(document.querySelector('body > .dest-rating-tip')).toBeNull();
+
+    const detailBadge = document.querySelector('.dest-rating--detail');
+    detailBadge.dispatchEvent(new Event('mouseenter'));
+    const tip = document.querySelector('body > .dest-rating-tip');
+    expect(tip).not.toBeNull();
+    expect(tip.classList.contains('is-visible')).toBe(true);
+    expect(tip.textContent).toContain('4.0 out of 5');
+    expect(tip.querySelectorAll('.drt-row')).toHaveLength(5);
+    expect(tip.querySelectorAll('.drt-action-btn')).toHaveLength(2);
+    tip.dispatchEvent(new Event('mouseleave'));
+    await new Promise((resolve) => setTimeout(resolve, 110));
+    expect(document.querySelector('body > .dest-rating-tip')).toBeNull();
+  });
+
+  test('detail page shows reviews for its destination only', async () => {
+    document.querySelector('[data-reviews]').dataset.destination = 'Phnom Penh';
+    initReviews();
+    await nextTick();
+    expect(document.querySelector('[data-review-count]').textContent).toBe('1 review');
+    expect(document.querySelector('[data-review-list]').textContent).toContain('Royal Palace');
+    expect(document.querySelector('[data-review-list]').textContent).not.toContain('Angkor Wat');
   });
 
   test('validates, creates, edits, deletes, and stores a review', async () => {

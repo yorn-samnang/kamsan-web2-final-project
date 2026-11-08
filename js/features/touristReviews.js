@@ -3,6 +3,8 @@ import { createElement } from '../utils/dom.js';
 import { validateReview } from '../utils/validate.js';
 
 const STORAGE_KEY = 'kamsan:reviews';
+const MINE_KEY = 'kamsan:mine'; // IDs of reviews the current browser session created
+const ratingTooltips = new WeakMap();
 
 // JSONPlaceholder posts contain filler text, so these clearly labeled examples
 // use simple English written for this class project. Their IDs come from GET /posts.
@@ -39,7 +41,15 @@ const SAMPLE_REVIEWS = [
 function readSavedReviews() {
   try {
     const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
-    return Array.isArray(saved) ? saved : null;
+    return Array.isArray(saved)
+      ? saved.filter(
+          (review) =>
+            review &&
+            typeof review === 'object' &&
+            typeof review.destination === 'string' &&
+            Number.isFinite(Number(review.rating))
+        )
+      : null;
   } catch {
     return null;
   }
@@ -54,6 +64,775 @@ function saveReviews(reviews) {
   }
 }
 
+function readMineIds() {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem(MINE_KEY));
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function addMineId(id) {
+  const ids = readMineIds();
+  if (!ids.includes(id)) {
+    try {
+      window.localStorage.setItem(MINE_KEY, JSON.stringify([...ids, id]));
+    } catch { /* ignore */ }
+  }
+}
+
+function removeMineId(id) {
+  try {
+    window.localStorage.setItem(
+      MINE_KEY,
+      JSON.stringify(readMineIds().filter((x) => x !== id))
+    );
+  } catch { /* ignore */ }
+}
+
+/* ============================================================
+   REVIEW MODAL
+   ============================================================ */
+
+let activeModalOverlay = null;
+let activeModalClose = null;
+
+/**
+ * Opens a self-contained review modal for a destination.
+ * Shows a post/edit form and a list of existing reviews.
+ * Edit & Delete buttons are shown only for the current user's reviews.
+ *
+ * @param {object} opts
+ * @param {string}  opts.destination  - Destination display name (e.g. "Phnom Penh")
+ * @param {boolean} [opts.focusReviews] - If true, scroll to the reviews list after open
+ */
+export function openReviewModal({ destination, focusReviews = false, editReviewId = null }) {
+  if (activeModalClose) activeModalClose();
+  const previousFocus = document.activeElement;
+  const previousOverflow = document.body.style.overflow;
+
+  /* ---- State ---- */
+  let reviews = readSavedReviews() || SAMPLE_REVIEWS.map((r) => ({ ...r }));
+  let editingId = null;
+  let selectedRating = 0;
+  let busy = false;
+
+  /* ---- Overlay ---- */
+  const overlay = document.createElement('div');
+  overlay.className = 'review-modal-overlay';
+
+  const panel = document.createElement('div');
+  panel.className = 'review-modal';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-labelledby', 'rmo-title');
+  panel.tabIndex = -1;
+
+  /* ---- Header ---- */
+  const header = document.createElement('div');
+  header.className = 'rmo-header';
+
+  const titleGroup = document.createElement('div');
+  titleGroup.className = 'rmo-title-group';
+  const title = document.createElement('h2');
+  title.className = 'rmo-title';
+  title.id = 'rmo-title';
+  title.textContent = `${destination} Reviews`;
+  titleGroup.append(title);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'rmo-close';
+  closeBtn.type = 'button';
+  closeBtn.setAttribute('aria-label', 'Close review panel');
+  closeBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>`;
+  closeBtn.addEventListener('click', closeModal);
+
+  header.append(titleGroup, closeBtn);
+
+  /* ---- Body ---- */
+  const body = document.createElement('div');
+  body.className = 'rmo-body';
+
+  /* -- Form section -- */
+  const formSection = document.createElement('section');
+  formSection.className = 'rmo-form-section';
+
+  const formHeading = document.createElement('h3');
+  formHeading.className = 'rmo-section-title';
+  formHeading.textContent = 'Post a Review';
+
+  /* Star picker */
+  const starField = document.createElement('div');
+  starField.className = 'rmo-field';
+  const starLabel = document.createElement('label');
+  starLabel.className = 'rmo-label';
+  starLabel.textContent = 'Your Rating';
+  const starPicker = document.createElement('div');
+  starPicker.className = 'rmo-star-picker';
+  starPicker.setAttribute('role', 'radiogroup');
+  starPicker.setAttribute('aria-label', 'Star rating');
+
+  const starBtns = Array.from({ length: 5 }, (_, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rmo-star';
+    btn.textContent = '★';
+    btn.setAttribute('aria-label', `${i + 1} star${i > 0 ? 's' : ''}`);
+    btn.dataset.value = i + 1;
+
+    btn.addEventListener('mouseenter', () => highlightStars(i + 1));
+    btn.addEventListener('mouseleave', () => highlightStars(selectedRating));
+    btn.addEventListener('click', () => {
+      selectedRating = i + 1;
+      highlightStars(selectedRating);
+    });
+    return btn;
+  });
+
+  function highlightStars(upTo) {
+    starBtns.forEach((b, i) => b.classList.toggle('active', i < upTo));
+  }
+
+  starPicker.append(...starBtns);
+  starField.append(starLabel, starPicker);
+
+  /* Name field */
+  const nameField = document.createElement('div');
+  nameField.className = 'rmo-field';
+  const nameLabel = document.createElement('label');
+  nameLabel.className = 'rmo-label';
+  nameLabel.htmlFor = 'rmo-name';
+  nameLabel.textContent = 'Your Name';
+  const nameInput = document.createElement('input');
+  nameInput.id = 'rmo-name';
+  nameInput.type = 'text';
+  nameInput.className = 'rmo-input';
+  nameInput.maxLength = 60;
+  nameInput.placeholder = 'Enter your name';
+  nameInput.required = true;
+  nameField.append(nameLabel, nameInput);
+
+  /* Comment field */
+  const commentField = document.createElement('div');
+  commentField.className = 'rmo-field';
+  const commentLabel = document.createElement('label');
+  commentLabel.className = 'rmo-label';
+  commentLabel.htmlFor = 'rmo-comment';
+  commentLabel.textContent = 'Comment';
+  const commentInput = document.createElement('textarea');
+  commentInput.id = 'rmo-comment';
+  commentInput.className = 'rmo-textarea';
+  commentInput.rows = 3;
+  commentInput.maxLength = 500;
+  commentInput.placeholder = 'Share your experience…';
+  commentInput.required = true;
+  commentField.append(commentLabel, commentInput);
+
+  /* Actions row */
+  const formActions = document.createElement('div');
+  formActions.className = 'rmo-form-actions';
+  const submitBtn = document.createElement('button');
+  submitBtn.type = 'button';
+  submitBtn.className = 'rmo-submit';
+  submitBtn.textContent = 'Post Review';
+  const cancelEditBtn = document.createElement('button');
+  cancelEditBtn.type = 'button';
+  cancelEditBtn.className = 'rmo-cancel-edit';
+  cancelEditBtn.textContent = 'Cancel';
+  cancelEditBtn.hidden = true;
+  const statusMsg = document.createElement('p');
+  statusMsg.className = 'rmo-status';
+  statusMsg.setAttribute('role', 'status');
+  statusMsg.setAttribute('aria-live', 'polite');
+  formActions.append(submitBtn, cancelEditBtn, statusMsg);
+
+  formSection.append(formHeading, starField, nameField, commentField, formActions);
+
+  /* -- Reviews list section -- */
+  const listSection = document.createElement('section');
+  listSection.className = 'rmo-list-section';
+
+  const listHeading = document.createElement('div');
+  listHeading.className = 'rmo-list-heading';
+  const listTitle = document.createElement('h3');
+  listTitle.className = 'rmo-section-title';
+  listTitle.textContent = 'All Reviews';
+  const listCount = document.createElement('span');
+  listCount.className = 'rmo-list-count';
+  listHeading.append(listTitle, listCount);
+
+  const listEl = document.createElement('div');
+  listEl.className = 'rmo-list';
+
+  listSection.append(listHeading, listEl);
+  body.append(formSection, listSection);
+  panel.append(header, body);
+  overlay.append(panel);
+  document.body.append(overlay);
+  document.body.style.overflow = 'hidden';
+
+  activeModalOverlay = overlay;
+  activeModalClose = closeModal;
+  nameInput.focus();
+
+  if (focusReviews) {
+    requestAnimationFrame(() => listSection.scrollIntoView({ behavior: 'smooth' }));
+  }
+
+  /* ---- Render review list ---- */
+  function renderList() {
+    const mine = readMineIds();
+    const dest = reviews.filter((r) => r.destination === destination);
+    listCount.textContent = `${dest.length} ${dest.length === 1 ? 'review' : 'reviews'}`;
+
+    if (!dest.length) {
+      listEl.innerHTML =
+        '<p class="rmo-empty">No reviews yet. Be the first to share your experience!</p>';
+      return;
+    }
+
+    listEl.replaceChildren(
+      ...dest.map((review) => {
+        const isOwn = !review.sample && mine.includes(review.id);
+        const card = document.createElement('article');
+        card.className = `rmo-review-card${isOwn ? ' is-own' : ''}`;
+
+        const cardTop = document.createElement('div');
+        cardTop.className = 'rmo-review-top';
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'rmo-review-name';
+        nameEl.textContent = review.name + (review.sample ? ' (sample)' : '');
+
+        const starsEl = document.createElement('span');
+        starsEl.className = 'rmo-review-stars';
+        starsEl.textContent = Array.from(
+          { length: 5 },
+          (_, i) => (i < review.rating ? '★' : '☆')
+        ).join('');
+
+        cardTop.append(nameEl, starsEl);
+
+        const commentEl = document.createElement('p');
+        commentEl.className = 'rmo-review-comment';
+        commentEl.textContent = review.comment;
+
+        card.append(cardTop, commentEl);
+
+        if (isOwn) {
+          const myBadge = document.createElement('span');
+          myBadge.className = 'rmo-mine-badge';
+          myBadge.textContent = 'My Review';
+          cardTop.prepend(myBadge);
+
+          const actionsEl = document.createElement('div');
+          actionsEl.className = 'rmo-review-actions';
+
+          const editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'rmo-review-btn edit';
+          editBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M11.5 2.5a2.121 2.121 0 0 1 3 3L5 15H2v-3L11.5 2.5z"
+              stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg> Edit`;
+          editBtn.addEventListener('click', () => startEdit(review));
+
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'rmo-review-btn delete';
+          delBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 5h10M6 5V3h4v2M13 5l-1 9H4L3 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg> Delete`;
+          delBtn.addEventListener('click', () => handleDelete(review.id));
+
+          actionsEl.append(editBtn, delBtn);
+          card.append(actionsEl);
+        }
+
+        return card;
+      })
+    );
+  }
+
+  /* ---- Form submit ---- */
+  submitBtn.addEventListener('click', async () => {
+    if (busy) return;
+
+    const name = nameInput.value.trim();
+    const comment = commentInput.value.trim();
+
+    const validation = validateReview({ name, destination, rating: selectedRating, comment });
+    if (!validation.isValid) {
+      statusMsg.textContent = Object.values(validation.errors)[0];
+      if (validation.errors.name) nameInput.focus();
+      else if (validation.errors.comment) commentInput.focus();
+      else starBtns[0].focus();
+      return;
+    }
+
+    busy = true;
+    submitBtn.disabled = true;
+    statusMsg.textContent = 'Saving…';
+
+    const reviewData = { name, destination, rating: selectedRating, comment };
+
+    try {
+      if (editingId) {
+        const current = reviews.find((r) => r.id === editingId);
+        if (!current || current.sample || !readMineIds().includes(editingId)) return;
+        updateReview(current.apiId, reviewData).catch(() => {});
+        reviews = reviews.map((r) =>
+          r.id === editingId ? { ...r, ...reviewData, sample: false } : r
+        );
+        statusMsg.textContent = 'Review updated.';
+        resetForm();
+      } else {
+        const newId = window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
+        createReview(reviewData).catch(() => {});
+        reviews.unshift({ ...reviewData, id: newId, apiId: 1, sample: false });
+        addMineId(newId);
+        statusMsg.textContent = 'Review posted!';
+        resetForm();
+      }
+      saveReviews(reviews);
+      renderList();
+      refreshPageReviews();
+      refreshCardBadges(destination, reviews);
+    } catch {
+      statusMsg.textContent = 'Something went wrong. Please try again.';
+    } finally {
+      busy = false;
+      submitBtn.disabled = false;
+    }
+  });
+
+  /* ---- Edit ---- */
+  function startEdit(review) {
+    if (review.sample || !readMineIds().includes(review.id)) return;
+    editingId = review.id;
+    nameInput.value = review.name;
+    commentInput.value = review.comment;
+    selectedRating = Number(review.rating);
+    highlightStars(selectedRating);
+    submitBtn.textContent = 'Save Changes';
+    cancelEditBtn.hidden = false;
+    statusMsg.textContent = '';
+    formSection.scrollIntoView({ behavior: 'smooth' });
+    nameInput.focus();
+  }
+
+  cancelEditBtn.addEventListener('click', () => {
+    resetForm();
+    statusMsg.textContent = 'Edit cancelled.';
+  });
+
+  function resetForm() {
+    editingId = null;
+    selectedRating = 0;
+    nameInput.value = '';
+    commentInput.value = '';
+    highlightStars(0);
+    submitBtn.textContent = 'Post Review';
+    cancelEditBtn.hidden = true;
+  }
+
+  /* ---- Delete ---- */
+  async function handleDelete(id) {
+    const current = reviews.find((r) => r.id === id);
+    if (!current || current.sample || !readMineIds().includes(id) || busy) return;
+    if (!window.confirm('Delete this review? This cannot be undone.')) return;
+    reviews = reviews.filter((r) => r.id !== id);
+    removeMineId(id);
+    if (editingId === id) resetForm();
+    saveReviews(reviews);
+    renderList();
+    refreshPageReviews();
+    refreshCardBadges(destination, reviews);
+    deleteReview(current.apiId).catch(() => {});
+  }
+
+  /* ---- Close ---- */
+  function closeModal() {
+    overlay.remove();
+    document.body.style.overflow = previousOverflow;
+    document.removeEventListener('keydown', onKey);
+    activeModalOverlay = null;
+    activeModalClose = null;
+    previousFocus?.focus?.();
+  }
+
+  function onKey(e) {
+    if (e.key === 'Escape') closeModal();
+    /* Basic focus trap */
+    if (e.key === 'Tab') {
+      const focusable = panel.querySelectorAll(
+        'button:not([disabled]):not([hidden]), input, textarea, [tabindex="0"]'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  }
+
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', onKey);
+
+  renderList();
+  if (editReviewId) {
+    const ownReview = reviews.find((review) => review.id === editReviewId);
+    if (ownReview) startEdit(ownReview);
+  }
+}
+
+/* Refresh the star badge on grid cards after a review change */
+function refreshCardBadges(destination, reviews) {
+  document.querySelectorAll('.dest-card').forEach((card) => {
+    const name = card.querySelector('.dest-name')?.textContent.trim();
+    if (name !== destination) return;
+    const old = card.querySelector('.dest-rating');
+    if (!old) return;
+    const ratings = reviews.filter((r) => r.destination === destination);
+    const destHref = card.querySelector('.dest-card-link')?.getAttribute('href') || '#';
+    const fresh = buildRatingBadge({
+      name,
+      ratings,
+      postUrl: `${destHref}#review-form`,
+      readUrl: `${destHref}#tourist-reviews`,
+      isInLink: true,
+      showTooltip: false,
+    });
+    ratingTooltips.get(old)?.close();
+    old.replaceWith(fresh);
+  });
+
+  /* Also refresh the detail-page hero badge if present */
+  const detailBadge = document.querySelector('.dest-rating--detail');
+  if (detailBadge) {
+    const name = document
+      .querySelector('[data-reviews][data-destination]')
+      ?.dataset.destination;
+    if (name === destination) {
+      const ratings = reviews.filter((r) => r.destination === destination);
+      const fresh = buildRatingBadge({
+        name,
+        ratings,
+        postUrl: '#review-form',
+        readUrl: '#tourist-reviews',
+        isInLink: false,
+      });
+      fresh.classList.add('dest-rating--detail');
+      ratingTooltips.get(detailBadge)?.close();
+      detailBadge.replaceWith(fresh);
+    }
+  }
+}
+
+/* Re-render the page-level review list (detail pages) if it exists */
+function refreshPageReviews() {
+  const list = document.querySelector('[data-review-list]');
+  const count = document.querySelector('[data-review-count]');
+  if (!list) return;
+  const dest = document
+    .querySelector('[data-reviews][data-destination]')
+    ?.dataset.destination;
+  if (!dest) return;
+  const reviews = readSavedReviews() || SAMPLE_REVIEWS;
+  const shown = reviews.filter((r) => r.destination === dest);
+  if (count) count.textContent = `${shown.length} ${shown.length === 1 ? 'review' : 'reviews'}`;
+  list.replaceChildren(...shown.map(makeReviewCard));
+}
+
+const ICON_POST = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <path d="M11.5 2.5a2.121 2.121 0 0 1 3 3L5 15H2v-3L11.5 2.5z"
+    stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+
+const ICON_EYE = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+  <path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"
+    stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.6"/>
+</svg>`;
+
+/**
+ * Builds a star-rating badge with a hover tooltip that shows the breakdown,
+ * and two action buttons (Post Review / Read Reviews).
+ *
+ * @param {object} opts
+ * @param {string}   opts.name        - Destination display name
+ * @param {Array}    opts.ratings     - Filtered review objects for this destination
+ * @param {string}   opts.postUrl     - URL/anchor for "Post Review"
+ * @param {string}   opts.readUrl     - URL/anchor for "Read Reviews"
+ * @param {boolean}  [opts.isInLink]  - True when badge lives inside an <a>; stops propagation on action clicks
+ * @param {boolean}  [opts.showTooltip] - Whether to show the rating breakdown on hover
+ * @returns {HTMLElement}
+ */
+function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, showTooltip = true }) {
+  const badge = document.createElement('span');
+  badge.className = 'dest-rating';
+  if (showTooltip) badge.setAttribute('tabindex', '0');
+
+  const count = ratings.length;
+
+  /* ---- Stars ---- */
+  const starsSpan = document.createElement('span');
+  starsSpan.className = 'dest-rating-stars';
+  starsSpan.setAttribute('aria-hidden', 'true');
+
+  if (count) {
+    const avg = ratings.reduce((sum, r) => sum + Number(r.rating), 0) / count;
+    const rounded = Math.round(avg);
+    starsSpan.textContent = Array.from({ length: 5 }, (_, i) => (i < rounded ? '★' : '☆')).join('');
+    badge.setAttribute('aria-label', `Rated ${avg.toFixed(1)} out of 5 stars, ${count} ${count === 1 ? 'review' : 'reviews'}`);
+    if (!showTooltip) {
+      badge.append(starsSpan);
+      return badge;
+    }
+
+    /* Per-star counts */
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    ratings.forEach((r) => {
+      const v = Math.min(5, Math.max(1, Math.round(Number(r.rating))));
+      counts[v] = (counts[v] || 0) + 1;
+    });
+
+    /* ---- Tooltip ---- */
+    const tip = document.createElement('div');
+    tip.className = 'dest-rating-tip';
+    tip.setAttribute('aria-hidden', 'true');
+
+    /* Header: score + count */
+    const header = document.createElement('div');
+    header.className = 'drt-header';
+    const scoreEl = document.createElement('span');
+    scoreEl.className = 'drt-score';
+    scoreEl.textContent = `${avg.toFixed(1)} out of 5`;
+    const countEl = document.createElement('span');
+    countEl.className = 'drt-count';
+    countEl.textContent = `${count} ${count === 1 ? 'Review' : 'Reviews'}`;
+    header.append(scoreEl, countEl);
+
+    /* Bar breakdown */
+    const bars = document.createElement('div');
+    bars.className = 'drt-bars';
+    for (let star = 5; star >= 1; star--) {
+      const pct = Math.round((counts[star] / count) * 100);
+      const row = document.createElement('div');
+      row.className = 'drt-row';
+      const lbl = document.createElement('span');
+      lbl.className = 'drt-label';
+      lbl.textContent = `${star}★`;
+      const track = document.createElement('span');
+      track.className = 'drt-track';
+      const fill = document.createElement('span');
+      fill.className = 'drt-fill';
+      fill.style.width = `${pct}%`;
+      track.append(fill);
+      const pctEl = document.createElement('span');
+      pctEl.className = 'drt-pct';
+      pctEl.textContent = `${pct}%`;
+      row.append(lbl, track, pctEl);
+      bars.append(row);
+    }
+
+    /* Action buttons */
+    const actions = document.createElement('div');
+    actions.className = 'drt-actions';
+
+    const postBtn = document.createElement('button');
+    postBtn.className = 'drt-action-btn drt-action-post';
+    postBtn.type = 'button';
+    postBtn.innerHTML = `${ICON_POST}<span>Post Review</span>`;
+
+    const readBtn = document.createElement('button');
+    readBtn.className = 'drt-action-btn drt-action-read';
+    readBtn.type = 'button';
+    readBtn.innerHTML = `${ICON_EYE}<span>Read Reviews</span>`;
+
+    /* Keep the card link from firing when opening its review dialog. */
+    function showReviews(e, focusReviews) {
+      if (isInLink) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      openReviewModal({ destination: name, focusReviews });
+    }
+
+    postBtn.addEventListener('click', (e) => showReviews(e, false));
+    readBtn.addEventListener('click', (e) => showReviews(e, true));
+
+    actions.append(postBtn, readBtn);
+    tip.append(header, bars, actions);
+    badge.append(starsSpan, tip);
+
+    /* JS-driven hover so tooltip stays open while mouse moves into it */
+    attachTooltipHover(badge, tip);
+  } else {
+    starsSpan.textContent = '☆☆☆☆☆';
+    badge.classList.add('dest-rating--empty');
+    badge.setAttribute('aria-label', 'No ratings yet');
+    if (!showTooltip) {
+      badge.append(starsSpan);
+      return badge;
+    }
+
+    const tip = document.createElement('div');
+    tip.className = 'dest-rating-tip';
+    tip.setAttribute('aria-hidden', 'true');
+
+    const noRating = document.createElement('div');
+    noRating.className = 'drt-header';
+    noRating.textContent = 'No ratings yet';
+
+    const actions = document.createElement('div');
+    actions.className = 'drt-actions';
+
+    const postBtn = document.createElement('button');
+    postBtn.className = 'drt-action-btn drt-action-post';
+    postBtn.type = 'button';
+    postBtn.innerHTML = `${ICON_POST}<span>Post Review</span>`;
+    postBtn.addEventListener('click', (e) => {
+      if (isInLink) { e.stopPropagation(); e.preventDefault(); }
+      openReviewModal({ destination: name });
+    });
+
+    actions.append(postBtn);
+    tip.append(noRating, actions);
+    badge.append(starsSpan, tip);
+
+    attachTooltipHover(badge, tip);
+  }
+
+  return badge;
+}
+
+/**
+ * Keeps a tooltip visible while the mouse is over the badge OR the tooltip
+ * itself (bridging any CSS gap), and handles keyboard dismiss via Escape.
+ */
+function attachTooltipHover(badge, tip) {
+  let hideTimer = null;
+
+  const position = () => {
+    const badgeRect = badge.getBoundingClientRect();
+    const width = tip.offsetWidth;
+    const height = tip.offsetHeight;
+    const left = Math.min(
+      Math.max(8, badgeRect.right - width),
+      Math.max(8, window.innerWidth - width - 8)
+    );
+    const top = badgeRect.top >= height + 16
+      ? badgeRect.top - height - 8
+      : badgeRect.bottom + 8;
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  };
+
+  const show = () => {
+    window.clearTimeout(hideTimer);
+    if (tip.parentElement !== document.body) document.body.append(tip);
+    tip.classList.add('is-visible');
+    position();
+    tip.setAttribute('aria-hidden', 'false');
+    window.addEventListener('scroll', position, { passive: true });
+    window.addEventListener('resize', position);
+  };
+
+  const hide = () => {
+    hideTimer = window.setTimeout(() => {
+      tip.classList.remove('is-visible');
+      tip.setAttribute('aria-hidden', 'true');
+      badge.append(tip);
+      window.removeEventListener('scroll', position);
+      window.removeEventListener('resize', position);
+    }, 100);
+  };
+
+  ratingTooltips.set(badge, {
+    close() {
+      window.clearTimeout(hideTimer);
+      window.removeEventListener('scroll', position);
+      window.removeEventListener('resize', position);
+      tip.remove();
+    },
+  });
+
+  badge.addEventListener('mouseenter', show);
+  badge.addEventListener('mouseleave', (e) => {
+    if (!tip.contains(e.relatedTarget)) hide();
+  });
+
+  tip.addEventListener('mouseenter', () => window.clearTimeout(hideTimer));
+  tip.addEventListener('mouseleave', (e) => {
+    if (!badge.contains(e.relatedTarget)) hide();
+  });
+
+  /* Keyboard: Enter/Space opens, Escape closes */
+  badge.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); }
+    if (e.key === 'Escape') hide();
+  });
+}
+
+function removeRatingBadge(badge) {
+  ratingTooltips.get(badge)?.close();
+  badge?.remove();
+}
+
+export function initCardRatings(root = document) {
+  const reviews = readSavedReviews() || SAMPLE_REVIEWS;
+  root.querySelectorAll('.dest-card').forEach((card) => {
+    const name = card.querySelector('.dest-name')?.textContent.trim();
+    if (!name) return;
+    const ratings = reviews.filter((r) => r.destination === name);
+    const destHref = card.querySelector('.dest-card-link')?.getAttribute('href') || '#';
+    const badge = buildRatingBadge({
+      name,
+      ratings,
+      postUrl: `${destHref}#review-form`,
+      readUrl: `${destHref}#tourist-reviews`,
+      isInLink: true,
+      showTooltip: false,
+    });
+    const photo = card.querySelector('.dest-photo-wrap');
+    removeRatingBadge(photo?.querySelector('.dest-rating'));
+    photo?.append(badge);
+  });
+}
+
+/**
+ * Builds the star-rating badge for a destination detail page and injects it
+ * into the bottom-right of the hero image. Appended to .detail-hero
+ * (position:relative) so the tooltip can escape the overlay's overflow:hidden.
+ */
+export function initDetailRating(root = document) {
+  const reviewsSection = root.querySelector('[data-reviews][data-destination]');
+  if (!reviewsSection) return;
+  const name = reviewsSection.dataset.destination;
+  const heroWrap = root.querySelector('.detail-hero');
+  if (!heroWrap) return;
+
+  const reviews = readSavedReviews() || SAMPLE_REVIEWS;
+  const ratings = reviews.filter((r) => r.destination === name);
+
+  const badge = buildRatingBadge({
+    name,
+    ratings,
+    postUrl: '#review-form',
+    readUrl: '#tourist-reviews',
+    isInLink: false,
+  });
+  badge.classList.add('dest-rating--detail');
+  removeRatingBadge(heroWrap.querySelector('.dest-rating--detail'));
+  heroWrap.append(badge);
+}
+
 function makeReviewCard(review) {
   const card = createElement('article', { className: 'review-card' });
   const heading = createElement('h4', {
@@ -66,18 +845,19 @@ function makeReviewCard(review) {
   const comment = createElement('p', { text: review.comment });
   const actions = createElement('div', { className: 'review-actions' });
 
-  for (const [action, label] of [
-    ['edit', 'Edit'],
-    ['delete', 'Delete'],
-  ]) {
-    actions.append(
-      createElement('button', {
-        className: 'review-action-button',
-        text: label,
-        attributes: { type: 'button' },
-        dataset: { reviewAction: action, reviewId: review.id },
-      })
-    );
+  if (!review.sample && readMineIds().includes(review.id)) {
+    actions.append(createElement('button', {
+      className: 'review-action-button',
+      text: 'Edit my review',
+      attributes: { type: 'button' },
+      dataset: { reviewAction: 'edit', reviewId: review.id },
+    }));
+    actions.append(createElement('button', {
+      className: 'review-action-button',
+      text: 'Delete my review',
+      attributes: { type: 'button' },
+      dataset: { reviewAction: 'delete', reviewId: review.id },
+    }));
   }
 
   card.append(heading, details, comment, actions);
@@ -87,6 +867,7 @@ function makeReviewCard(review) {
 export function initReviews({ root = document } = {}) {
   const section = root.querySelector('[data-reviews]');
   if (!section) return;
+  const destination = section.dataset.destination;
 
   const form = section.querySelector('#review-form');
   const list = section.querySelector('[data-review-list]');
@@ -101,8 +882,11 @@ export function initReviews({ root = document } = {}) {
   let hasChanged = false;
 
   function render() {
-    count.textContent = `${reviews.length} ${reviews.length === 1 ? 'review' : 'reviews'}`;
-    list.replaceChildren(...reviews.map(makeReviewCard));
+    const shown = destination
+      ? reviews.filter((review) => review.destination === destination)
+      : reviews;
+    count.textContent = `${shown.length} ${shown.length === 1 ? 'review' : 'reviews'}`;
+    list.replaceChildren(...shown.map(makeReviewCard));
   }
 
   function resetForm() {
@@ -152,15 +936,17 @@ export function initReviews({ root = document } = {}) {
         );
       } else {
         apiRequest = createReview(review);
+        const id = String(Date.now());
         reviews.unshift({
           ...review,
-          id: String(Date.now()),
+          id,
           // New JSONPlaceholder posts are not really stored. Use an existing
           // demo post for later PUT and DELETE requests.
           apiId: 1,
           rating: Number(review.rating),
           sample: false,
         });
+        addMineId(id);
       }
       hasChanged = true;
       const stored = saveReviews(reviews);
