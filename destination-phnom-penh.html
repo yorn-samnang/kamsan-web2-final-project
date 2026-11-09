@@ -64,9 +64,46 @@
       </section>
 
       <!-- DESTINATION HERO -->
-      <section class="detail-hero">
-        <span class="dest-rating dest-rating--detail" aria-label="Rated 4.0 out of 5 stars, 1 review">
+      <section class="detail-hero" data-destination="Phnom Penh">
+        <span
+          class="dest-rating dest-rating--detail dest-rating--fallback"
+          aria-label="Rated 4.0 out of 5 stars, 1 review"
+          aria-describedby="detail-rating-fallback"
+          tabindex="0"
+        >
           <span class="dest-rating-stars" aria-hidden="true">★★★★☆</span>
+          <span class="dest-rating-tip" id="detail-rating-fallback" role="tooltip">
+            <span class="drt-header">
+              <span class="drt-score">4.0 out of 5</span>
+              <span class="drt-count">1 Review</span>
+            </span>
+            <span class="drt-bars">
+              <span class="drt-row"
+                ><span class="drt-label">5★</span
+                ><span class="drt-track"><span class="drt-fill" style="width: 0%"></span></span
+                ><span class="drt-pct">0%</span></span
+              >
+              <span class="drt-row"
+                ><span class="drt-label">4★</span
+                ><span class="drt-track"><span class="drt-fill" style="width: 100%"></span></span
+                ><span class="drt-pct">100%</span></span
+              >
+              <span class="drt-row"
+                ><span class="drt-label">3★</span
+                ><span class="drt-track"><span class="drt-fill" style="width: 0%"></span></span
+                ><span class="drt-pct">0%</span></span
+              >
+              <span class="drt-row"
+                ><span class="drt-label">2★</span
+                ><span class="drt-track"><span class="drt-fill" style="width: 0%"></span></span
+                ><span class="drt-pct">0%</span></span
+              ><span class="drt-row"
+                ><span class="drt-label">1★</span
+                ><span class="drt-track"><span class="drt-fill" style="width: 0%"></span></span
+                ><span class="drt-pct">0%</span></span
+              >
+            </span>
+          </span>
         </span>
         <div class="detail-hero-overlay">
           <div class="detail-hero-content">
@@ -553,6 +590,6 @@
     </footer>
 
     <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/main-destination-detail.js"></script>
+    <script src="destination-detail.bundle.js" defer></script>
   </body>
 </html>

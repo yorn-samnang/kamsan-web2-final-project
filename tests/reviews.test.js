@@ -94,8 +94,7 @@ describe('tourist reviews', () => {
   test('opens rating details on the destination detail hero only', async () => {
     document.body.innerHTML = `
       <article class="dest-card"><div class="dest-photo-wrap"></div><h3 class="dest-name">Phnom Penh</h3></article>
-      <section class="detail-hero"></section>
-      <section data-reviews data-destination="Phnom Penh"></section>
+      <section class="detail-hero" data-destination="Phnom Penh"></section>
     `;
     initCardRatings();
     initDetailRating();
@@ -115,6 +114,43 @@ describe('tourist reviews', () => {
     tip.dispatchEvent(new Event('mouseleave'));
     await new Promise((resolve) => setTimeout(resolve, 110));
     expect(document.querySelector('body > .dest-rating-tip')).toBeNull();
+  });
+
+  test('rating details reopen after closing the review dialog', async () => {
+    document.body.innerHTML = '<section class="detail-hero" data-destination="Phnom Penh"></section>';
+    initDetailRating();
+
+    const badge = document.querySelector('.dest-rating--detail');
+    badge.dispatchEvent(new Event('mouseenter'));
+    const postButton = document.querySelector('.drt-action-post');
+    postButton.focus();
+    postButton.click();
+
+    expect(document.querySelector('.review-modal-overlay')).not.toBeNull();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    document.querySelector('.rmo-close').click();
+
+    expect(document.querySelector('.review-modal-overlay')).toBeNull();
+    expect(document.body.style.overflow).toBe('');
+    expect(document.activeElement).toBe(badge);
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).not.toBeNull();
+
+    document.body.dispatchEvent(new Event('pointermove', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 110));
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).toBeNull();
+
+    badge.dispatchEvent(new Event('mouseenter'));
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).not.toBeNull();
+  });
+
+  test('the detail rating opens on click as well as hover', () => {
+    document.body.innerHTML = '<section class="detail-hero" data-destination="Phnom Penh"></section>';
+    initDetailRating();
+
+    document.querySelector('.dest-rating--detail').click();
+
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).not.toBeNull();
   });
 
   test('detail page shows reviews for its destination only', async () => {

@@ -107,7 +107,7 @@ let activeModalClose = null;
  * @param {string}  opts.destination  - Destination display name (e.g. "Phnom Penh")
  * @param {boolean} [opts.focusReviews] - If true, scroll to the reviews list after open
  */
-export function openReviewModal({ destination, focusReviews = false, editReviewId = null }) {
+export function openReviewModal({ destination, focusReviews = false, editReviewId = null, returnFocus = null }) {
   if (activeModalClose) activeModalClose();
   const previousFocus = document.activeElement;
   const previousOverflow = document.body.style.overflow;
@@ -461,7 +461,8 @@ export function openReviewModal({ destination, focusReviews = false, editReviewI
     document.removeEventListener('keydown', onKey);
     activeModalOverlay = null;
     activeModalClose = null;
-    previousFocus?.focus?.();
+    const focusTarget = returnFocus?.isConnected ? returnFocus : previousFocus;
+    if (focusTarget?.isConnected) focusTarget.focus({ preventScroll: true });
   }
 
   function onKey(e) {
@@ -515,9 +516,8 @@ function refreshCardBadges(destination, reviews) {
   /* Also refresh the detail-page hero badge if present */
   const detailBadge = document.querySelector('.dest-rating--detail');
   if (detailBadge) {
-    const name = document
-      .querySelector('[data-reviews][data-destination]')
-      ?.dataset.destination;
+    const name = document.querySelector('.detail-hero[data-destination]')?.dataset.destination
+      || document.querySelector('[data-reviews][data-destination]')?.dataset.destination;
     if (name === destination) {
       const ratings = reviews.filter((r) => r.destination === destination);
       const fresh = buildRatingBadge({
@@ -661,7 +661,7 @@ function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, s
         e.stopPropagation();
         e.preventDefault();
       }
-      openReviewModal({ destination: name, focusReviews });
+      openReviewModal({ destination: name, focusReviews, returnFocus: badge });
     }
 
     postBtn.addEventListener('click', (e) => showReviews(e, false));
@@ -699,7 +699,7 @@ function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, s
     postBtn.innerHTML = `${ICON_POST}<span>Post Review</span>`;
     postBtn.addEventListener('click', (e) => {
       if (isInLink) { e.stopPropagation(); e.preventDefault(); }
-      openReviewModal({ destination: name });
+      openReviewModal({ destination: name, returnFocus: badge });
     });
 
     actions.append(postBtn);
@@ -718,6 +718,10 @@ function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, s
  */
 function attachTooltipHover(badge, tip) {
   let hideTimer = null;
+
+  const onPointerMove = (e) => {
+    if (!badge.contains(e.target) && !tip.contains(e.target)) hide();
+  };
 
   const position = () => {
     const badgeRect = badge.getBoundingClientRect();
@@ -740,6 +744,7 @@ function attachTooltipHover(badge, tip) {
     tip.classList.add('is-visible');
     position();
     tip.setAttribute('aria-hidden', 'false');
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('scroll', position, { passive: true });
     window.addEventListener('resize', position);
   };
@@ -749,6 +754,7 @@ function attachTooltipHover(badge, tip) {
       tip.classList.remove('is-visible');
       tip.setAttribute('aria-hidden', 'true');
       badge.append(tip);
+      document.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('scroll', position);
       window.removeEventListener('resize', position);
     }, 100);
@@ -757,6 +763,7 @@ function attachTooltipHover(badge, tip) {
   ratingTooltips.set(badge, {
     close() {
       window.clearTimeout(hideTimer);
+      document.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('scroll', position);
       window.removeEventListener('resize', position);
       tip.remove();
@@ -764,13 +771,21 @@ function attachTooltipHover(badge, tip) {
   });
 
   badge.addEventListener('mouseenter', show);
+  badge.addEventListener('focus', show);
+  badge.addEventListener('click', show);
   badge.addEventListener('mouseleave', (e) => {
+    if (!tip.contains(e.relatedTarget)) hide();
+  });
+  badge.addEventListener('focusout', (e) => {
     if (!tip.contains(e.relatedTarget)) hide();
   });
 
   tip.addEventListener('mouseenter', () => window.clearTimeout(hideTimer));
   tip.addEventListener('mouseleave', (e) => {
     if (!badge.contains(e.relatedTarget)) hide();
+  });
+  tip.addEventListener('focusout', (e) => {
+    if (!badge.contains(e.relatedTarget) && !tip.contains(e.relatedTarget)) hide();
   });
 
   /* Keyboard: Enter/Space opens, Escape closes */
@@ -812,11 +827,11 @@ export function initCardRatings(root = document) {
  * (position:relative) so the tooltip can escape the overlay's overflow:hidden.
  */
 export function initDetailRating(root = document) {
-  const reviewsSection = root.querySelector('[data-reviews][data-destination]');
-  if (!reviewsSection) return;
-  const name = reviewsSection.dataset.destination;
   const heroWrap = root.querySelector('.detail-hero');
   if (!heroWrap) return;
+  const name = heroWrap.dataset.destination
+    || root.querySelector('[data-reviews][data-destination]')?.dataset.destination;
+  if (!name) return;
 
   const reviews = readSavedReviews() || SAMPLE_REVIEWS;
   const ratings = reviews.filter((r) => r.destination === name);

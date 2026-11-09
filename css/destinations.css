@@ -1028,6 +1028,18 @@
   right: 0;
 }
 
+.dest-rating--fallback:hover > .dest-rating-tip,
+.dest-rating--fallback:focus > .dest-rating-tip,
+.dest-rating--fallback:focus-within > .dest-rating-tip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.dest-rating--fallback .dest-rating-tip {
+  bottom: calc(100% + 8px);
+}
+
 .dest-explore {
   display: inline-flex;
   align-items: center;

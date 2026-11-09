@@ -7,6 +7,8 @@
     "doc": "doc"
   },
   "scripts": {
+    "build:destination-detail": "node scripts/build-destination-detail.mjs",
+    "pretest": "node scripts/build-destination-detail.mjs --check",
     "prepare": "husky",
     "lint": "eslint \"js/**/*.js\"",
     "format": "prettier --write .",
