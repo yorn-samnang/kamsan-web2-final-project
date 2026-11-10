@@ -78,17 +78,18 @@ function addMineId(id) {
   if (!ids.includes(id)) {
     try {
       window.localStorage.setItem(MINE_KEY, JSON.stringify([...ids, id]));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 }
 
 function removeMineId(id) {
   try {
-    window.localStorage.setItem(
-      MINE_KEY,
-      JSON.stringify(readMineIds().filter((x) => x !== id))
-    );
-  } catch { /* ignore */ }
+    window.localStorage.setItem(MINE_KEY, JSON.stringify(readMineIds().filter((x) => x !== id)));
+  } catch {
+    /* ignore */
+  }
 }
 
 /* ============================================================
@@ -107,7 +108,12 @@ let activeModalClose = null;
  * @param {string}  opts.destination  - Destination display name (e.g. "Phnom Penh")
  * @param {boolean} [opts.focusReviews] - If true, scroll to the reviews list after open
  */
-export function openReviewModal({ destination, focusReviews = false, editReviewId = null, returnFocus = null }) {
+export function openReviewModal({
+  destination,
+  focusReviews = false,
+  editReviewId = null,
+  returnFocus = null,
+}) {
   if (activeModalClose) activeModalClose();
   const previousFocus = document.activeElement;
   const previousOverflow = document.body.style.overflow;
@@ -309,9 +315,8 @@ export function openReviewModal({ destination, focusReviews = false, editReviewI
 
         const starsEl = document.createElement('span');
         starsEl.className = 'rmo-review-stars';
-        starsEl.textContent = Array.from(
-          { length: 5 },
-          (_, i) => (i < review.rating ? '★' : '☆')
+        starsEl.textContent = Array.from({ length: 5 }, (_, i) =>
+          i < review.rating ? '★' : '☆'
         ).join('');
 
         cardTop.append(nameEl, starsEl);
@@ -475,14 +480,18 @@ export function openReviewModal({ destination, focusReviews = false, editReviewI
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault(); last.focus();
+        e.preventDefault();
+        last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault(); first.focus();
+        e.preventDefault();
+        first.focus();
       }
     }
   }
 
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
   document.addEventListener('keydown', onKey);
 
   renderList();
@@ -516,8 +525,9 @@ function refreshCardBadges(destination, reviews) {
   /* Also refresh the detail-page hero badge if present */
   const detailBadge = document.querySelector('.dest-rating--detail');
   if (detailBadge) {
-    const name = document.querySelector('.detail-hero[data-destination]')?.dataset.destination
-      || document.querySelector('[data-reviews][data-destination]')?.dataset.destination;
+    const name =
+      document.querySelector('.detail-hero[data-destination]')?.dataset.destination ||
+      document.querySelector('[data-reviews][data-destination]')?.dataset.destination;
     if (name === destination) {
       const ratings = reviews.filter((r) => r.destination === destination);
       const fresh = buildRatingBadge({
@@ -539,9 +549,7 @@ function refreshPageReviews() {
   const list = document.querySelector('[data-review-list]');
   const count = document.querySelector('[data-review-count]');
   if (!list) return;
-  const dest = document
-    .querySelector('[data-reviews][data-destination]')
-    ?.dataset.destination;
+  const dest = document.querySelector('[data-reviews][data-destination]')?.dataset.destination;
   if (!dest) return;
   const reviews = readSavedReviews() || SAMPLE_REVIEWS;
   const shown = reviews.filter((r) => r.destination === dest);
@@ -573,7 +581,14 @@ const ICON_EYE = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" ar
  * @param {boolean}  [opts.showTooltip] - Whether to show the rating breakdown on hover
  * @returns {HTMLElement}
  */
-function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, showTooltip = true }) {
+function buildRatingBadge({
+  name,
+  ratings,
+  postUrl,
+  readUrl,
+  isInLink = false,
+  showTooltip = true,
+}) {
   const badge = document.createElement('span');
   badge.className = 'dest-rating';
   if (showTooltip) badge.setAttribute('tabindex', '0');
@@ -589,7 +604,10 @@ function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, s
     const avg = ratings.reduce((sum, r) => sum + Number(r.rating), 0) / count;
     const rounded = Math.round(avg);
     starsSpan.textContent = Array.from({ length: 5 }, (_, i) => (i < rounded ? '★' : '☆')).join('');
-    badge.setAttribute('aria-label', `Rated ${avg.toFixed(1)} out of 5 stars, ${count} ${count === 1 ? 'review' : 'reviews'}`);
+    badge.setAttribute(
+      'aria-label',
+      `Rated ${avg.toFixed(1)} out of 5 stars, ${count} ${count === 1 ? 'review' : 'reviews'}`
+    );
     if (!showTooltip) {
       badge.append(starsSpan);
       return badge;
@@ -698,7 +716,10 @@ function buildRatingBadge({ name, ratings, postUrl, readUrl, isInLink = false, s
     postBtn.type = 'button';
     postBtn.innerHTML = `${ICON_POST}<span>Post Review</span>`;
     postBtn.addEventListener('click', (e) => {
-      if (isInLink) { e.stopPropagation(); e.preventDefault(); }
+      if (isInLink) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
       openReviewModal({ destination: name, returnFocus: badge });
     });
 
@@ -731,9 +752,7 @@ function attachTooltipHover(badge, tip) {
       Math.max(8, badgeRect.right - width),
       Math.max(8, window.innerWidth - width - 8)
     );
-    const top = badgeRect.top >= height + 16
-      ? badgeRect.top - height - 8
-      : badgeRect.bottom + 8;
+    const top = badgeRect.top >= height + 16 ? badgeRect.top - height - 8 : badgeRect.bottom + 8;
     tip.style.left = `${left}px`;
     tip.style.top = `${top}px`;
   };
@@ -790,7 +809,10 @@ function attachTooltipHover(badge, tip) {
 
   /* Keyboard: Enter/Space opens, Escape closes */
   badge.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      show();
+    }
     if (e.key === 'Escape') hide();
   });
 }
@@ -829,8 +851,9 @@ export function initCardRatings(root = document) {
 export function initDetailRating(root = document) {
   const heroWrap = root.querySelector('.detail-hero');
   if (!heroWrap) return;
-  const name = heroWrap.dataset.destination
-    || root.querySelector('[data-reviews][data-destination]')?.dataset.destination;
+  const name =
+    heroWrap.dataset.destination ||
+    root.querySelector('[data-reviews][data-destination]')?.dataset.destination;
   if (!name) return;
 
   const reviews = readSavedReviews() || SAMPLE_REVIEWS;
@@ -861,18 +884,22 @@ function makeReviewCard(review) {
   const actions = createElement('div', { className: 'review-actions' });
 
   if (!review.sample && readMineIds().includes(review.id)) {
-    actions.append(createElement('button', {
-      className: 'review-action-button',
-      text: 'Edit my review',
-      attributes: { type: 'button' },
-      dataset: { reviewAction: 'edit', reviewId: review.id },
-    }));
-    actions.append(createElement('button', {
-      className: 'review-action-button',
-      text: 'Delete my review',
-      attributes: { type: 'button' },
-      dataset: { reviewAction: 'delete', reviewId: review.id },
-    }));
+    actions.append(
+      createElement('button', {
+        className: 'review-action-button',
+        text: 'Edit my review',
+        attributes: { type: 'button' },
+        dataset: { reviewAction: 'edit', reviewId: review.id },
+      })
+    );
+    actions.append(
+      createElement('button', {
+        className: 'review-action-button',
+        text: 'Delete my review',
+        attributes: { type: 'button' },
+        dataset: { reviewAction: 'delete', reviewId: review.id },
+      })
+    );
   }
 
   card.append(heading, details, comment, actions);

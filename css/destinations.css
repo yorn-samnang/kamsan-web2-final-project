@@ -1016,8 +1016,8 @@
    of .detail-hero-overlay and positioned relative to .detail-hero instead.
    bottom/right account for .detail-hero's padding (18px bottom, 24px right). */
 .dest-rating--detail {
-  bottom: 38px;  /* 18px padding + 20px inset from image edge */
-  right: 44px;   /* 24px padding + 20px inset from image edge */
+  bottom: 38px; /* 18px padding + 20px inset from image edge */
+  right: 44px; /* 24px padding + 20px inset from image edge */
   font-size: 1.08rem;
   padding: 6px 14px;
   z-index: 3;
@@ -1097,14 +1097,48 @@
   font-weight: 600;
 }
 
+.destination-weather-control {
+  max-width: 400px;
+}
+
+.destination-weather-control select,
+.destination-weather-control select::picker(select) {
+  appearance: base-select;
+}
+
 .destination-weather-control select {
   width: 100%;
-  padding: 12px;
+  min-height: 56px;
+  padding: 16px 20px;
+  font-size: 1.05rem;
   border: 1px solid rgba(23, 55, 57, 0.25);
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   color: var(--text-strong);
-  font: inherit;
+  font-family: inherit;
+}
+
+.destination-weather-control select::picker(select) {
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: none;
+  margin-top: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid rgba(23, 55, 57, 0.25);
+  border-radius: 12px;
+  background: #fff;
+  padding: 6px;
+}
+
+.destination-weather-control select option {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.destination-weather-control select option:hover,
+.destination-weather-control select option:checked {
+  background: #e8f2f0;
 }
 
 .destination-weather-content {
@@ -2133,8 +2167,12 @@
 }
 
 @keyframes rmo-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Panel */
@@ -2147,15 +2185,23 @@
   max-height: 86vh;
   border-radius: 24px;
   background: #ffffff;
-  box-shadow: 0 24px 72px rgba(5, 18, 20, 0.22), 0 2px 8px rgba(5, 18, 20, 0.08);
+  box-shadow:
+    0 24px 72px rgba(5, 18, 20, 0.22),
+    0 2px 8px rgba(5, 18, 20, 0.08);
   overflow: hidden;
   text-align: left;
   animation: rmo-rise 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes rmo-rise {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ---- Header ---- */
@@ -2195,7 +2241,9 @@
   background: #f2f6f6;
   color: #4a6e70;
   cursor: pointer;
-  transition: background 0.14s ease, color 0.14s ease;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
 }
 
 .rmo-close:hover {
@@ -2263,7 +2311,10 @@
   font-family: inherit;
   line-height: 1.5;
   box-sizing: border-box;
-  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease,
+    box-shadow 0.14s ease;
 }
 
 .rmo-input:focus,
@@ -2294,7 +2345,9 @@
   padding: 2px 3px;
   color: #dde8e9;
   cursor: pointer;
-  transition: color 0.1s ease, transform 0.12s ease;
+  transition:
+    color 0.1s ease,
+    transform 0.12s ease;
   user-select: none;
 }
 
@@ -2328,7 +2381,9 @@
   font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.14s ease, transform 0.14s ease;
+  transition:
+    background 0.14s ease,
+    transform 0.14s ease;
 }
 
 .rmo-submit:hover:not(:disabled) {
@@ -2353,7 +2408,9 @@
   font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.14s ease, border-color 0.14s ease;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease;
 }
 
 .rmo-cancel-edit:hover {
@@ -2484,7 +2541,10 @@
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.13s ease, color 0.13s ease, border-color 0.13s ease;
+  transition:
+    background 0.13s ease,
+    color 0.13s ease,
+    border-color 0.13s ease;
 }
 
 .rmo-review-btn.edit:hover {

@@ -117,7 +117,8 @@ describe('tourist reviews', () => {
   });
 
   test('rating details reopen after closing the review dialog', async () => {
-    document.body.innerHTML = '<section class="detail-hero" data-destination="Phnom Penh"></section>';
+    document.body.innerHTML =
+      '<section class="detail-hero" data-destination="Phnom Penh"></section>';
     initDetailRating();
 
     const badge = document.querySelector('.dest-rating--detail');
@@ -145,7 +146,8 @@ describe('tourist reviews', () => {
   });
 
   test('the detail rating opens on click as well as hover', () => {
-    document.body.innerHTML = '<section class="detail-hero" data-destination="Phnom Penh"></section>';
+    document.body.innerHTML =
+      '<section class="detail-hero" data-destination="Phnom Penh"></section>';
     initDetailRating();
 
     document.querySelector('.dest-rating--detail').click();

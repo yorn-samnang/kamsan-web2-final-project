@@ -141,6 +141,5 @@ vite.config.ts.timestamp-*
 .env.local
 .DS_Store
 dist/
-.prettierignore
 .codex/
 .idea/
