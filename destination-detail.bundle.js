@@ -299,7 +299,6 @@ function removeMineId(id) {
    REVIEW MODAL
    ============================================================ */
 
-let activeModalOverlay = null;
 let activeModalClose = null;
 
 /**
@@ -483,7 +482,6 @@ function openReviewModal({
   document.body.append(overlay);
   document.body.style.overflow = 'hidden';
 
-  activeModalOverlay = overlay;
   activeModalClose = closeModal;
   nameInput.focus();
 
@@ -667,7 +665,6 @@ function openReviewModal({
     overlay.remove();
     document.body.style.overflow = previousOverflow;
     document.removeEventListener('keydown', onKey);
-    activeModalOverlay = null;
     activeModalClose = null;
     const focusTarget = returnFocus?.isConnected ? returnFocus : previousFocus;
     if (focusTarget?.isConnected) focusTarget.focus({ preventScroll: true });
@@ -712,12 +709,9 @@ function refreshCardBadges(destination, reviews) {
     const old = card.querySelector('.dest-rating');
     if (!old) return;
     const ratings = reviews.filter((r) => r.destination === destination);
-    const destHref = card.querySelector('.dest-card-link')?.getAttribute('href') || '#';
     const fresh = buildRatingBadge({
       name,
       ratings,
-      postUrl: `${destHref}#review-form`,
-      readUrl: `${destHref}#tourist-reviews`,
       isInLink: true,
       showTooltip: false,
     });
@@ -736,8 +730,6 @@ function refreshCardBadges(destination, reviews) {
       const fresh = buildRatingBadge({
         name,
         ratings,
-        postUrl: '#review-form',
-        readUrl: '#tourist-reviews',
         isInLink: false,
       });
       fresh.classList.add('dest-rating--detail');
@@ -778,20 +770,11 @@ const ICON_EYE = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" ar
  * @param {object} opts
  * @param {string}   opts.name        - Destination display name
  * @param {Array}    opts.ratings     - Filtered review objects for this destination
- * @param {string}   opts.postUrl     - URL/anchor for "Post Review"
- * @param {string}   opts.readUrl     - URL/anchor for "Read Reviews"
  * @param {boolean}  [opts.isInLink]  - True when badge lives inside an <a>; stops propagation on action clicks
  * @param {boolean}  [opts.showTooltip] - Whether to show the rating breakdown on hover
  * @returns {HTMLElement}
  */
-function buildRatingBadge({
-  name,
-  ratings,
-  postUrl,
-  readUrl,
-  isInLink = false,
-  showTooltip = true,
-}) {
+function buildRatingBadge({ name, ratings, isInLink = false, showTooltip = true }) {
   const badge = document.createElement('span');
   badge.className = 'dest-rating';
   if (showTooltip) badge.setAttribute('tabindex', '0');
@@ -1031,12 +1014,9 @@ function initCardRatings(root = document) {
     const name = card.querySelector('.dest-name')?.textContent.trim();
     if (!name) return;
     const ratings = reviews.filter((r) => r.destination === name);
-    const destHref = card.querySelector('.dest-card-link')?.getAttribute('href') || '#';
     const badge = buildRatingBadge({
       name,
       ratings,
-      postUrl: `${destHref}#review-form`,
-      readUrl: `${destHref}#tourist-reviews`,
       isInLink: true,
       showTooltip: false,
     });
@@ -1065,8 +1045,6 @@ function initDetailRating(root = document) {
   const badge = buildRatingBadge({
     name,
     ratings,
-    postUrl: '#review-form',
-    readUrl: '#tourist-reviews',
     isInLink: false,
   });
   badge.classList.add('dest-rating--detail');

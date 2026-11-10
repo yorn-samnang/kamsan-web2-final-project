@@ -47,11 +47,13 @@ describe('weather service', () => {
       humidity: 70,
       windSpeed: 12.4,
     });
-    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('latitude=11.5564'), {});
+    expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('latitude=11.5625'), {});
   });
 
   test('rejects an unsupported destination before making a request', async () => {
-    await expect(getCurrentWeather('battambang')).rejects.toThrow('Unsupported destination');
+    await expect(getCurrentWeather('unknown-destination')).rejects.toThrow(
+      'Unsupported destination'
+    );
   });
 });
 
