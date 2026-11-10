@@ -27,7 +27,7 @@
   grid-template-columns: 1.35fr 0.85fr;
   gap: 26px;
   align-items: stretch;
-  padding-top: 26px;
+  padding-top: 0px;
 }
 
 .contact-hero-content,
