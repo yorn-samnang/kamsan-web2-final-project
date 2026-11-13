@@ -1,0 +1,184 @@
+.trip-planner {
+  width: min(100% - 2rem, 72rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.trip-planner section {
+  padding: 1rem 0;
+}
+
+.trip-item {
+  margin: 0 0 0.75rem;
+  padding: 1rem;
+  border: 1px solid #dce8e4;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.trip-item h3 {
+  margin: 0 0 0.5rem;
+}
+
+.trip-item p {
+  margin: 0 0 0.75rem;
+}
+
+.trip-item-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trip-suggestion-group {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.trip-suggestion-group > h3 {
+  grid-column: 1 / -1;
+  margin: 1rem 0;
+}
+
+.trip-suggestion {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #dce8e4;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.trip-suggestion h4 {
+  flex: 1;
+  margin: 0 0 0.75rem;
+}
+
+.trip-suggestion img {
+  display: block;
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.trip-suggestion .trip-add-button {
+  align-self: flex-start;
+}
+
+[data-trip-status][data-error='true'] {
+  color: #a32020;
+}
+
+@media (max-width: 900px) {
+  .trip-suggestion-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body {
+    padding-top: 86px;
+  }
+
+  header {
+    padding: 0;
+  }
+
+  .brand-mark {
+    display: none;
+  }
+
+  .nav-shell {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    gap: 0;
+  }
+
+  .nav-pill {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 0;
+  }
+
+  .brand-copy {
+    grid-column: 1;
+    min-width: 132px;
+    width: 132px;
+    height: 42px;
+    background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
+    text-align: left;
+  }
+
+  .brand-title {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-indent: -9999px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .nav-toggle {
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .site-nav {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  .nav-pill.menu-open .site-nav {
+    display: flex;
+  }
+
+  .site-nav a {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.42);
+  }
+
+  .nav-pill.menu-open .nav-toggle span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+  }
+
+  .nav-pill.menu-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-pill.menu-open .nav-toggle span:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .trip-planner {
+    width: min(100% - 1.5rem, 72rem);
+  }
+
+  .trip-suggestion-group {
+    grid-template-columns: 1fr;
+  }
+}

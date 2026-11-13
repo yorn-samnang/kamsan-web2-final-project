@@ -213,14 +213,15 @@
 .place-card-grid {
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
-  height: 380px;
 }
 
 .place-card {
   display: flex;
+  min-width: 0;
   flex-direction: column;
+  overflow: hidden;
   border-radius: 12px;
   background: linear-gradient(180deg, #ffffff 60%, #daedf7 98%, #b5d4f4 100%);
   opacity: 0;
@@ -243,17 +244,19 @@
 }
 
 .place-card img {
-  flex: 0 0 50%;
+  flex: 0 0 auto;
   width: 100%;
-  height: 50%;
+  height: auto;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
 
 .card-content {
-  padding: 0 1.5rem;
-  flex: 0 0 50%;
+  min-width: 0;
+  padding: 1rem;
+  flex: 1;
 }
 
 .card-content h3 {
@@ -290,12 +293,8 @@
     gap: 1.5rem;
   }
 
-  .place-card {
-    height: 460px;
-  }
-
   .card-content {
-    padding: 0.5rem 1.5rem;
+    padding: 1rem;
   }
 
   .card-content h3 {
@@ -373,12 +372,8 @@
     margin: 2rem 2rem;
   }
 
-  .place-card {
-    height: 340px;
-  }
-
   .card-content {
-    padding: 0.5rem 1.5rem;
+    padding: 1rem;
   }
 
   .card-content h3 {

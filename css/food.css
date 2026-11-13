@@ -230,6 +230,8 @@
 }
 
 .food-photo-card {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border-radius: 28px;
   border: 1px solid rgba(23, 55, 57, 0.08);
@@ -259,6 +261,7 @@
 }
 
 .food-card-copy {
+  flex: 1;
   padding: 18px 18px 22px;
 }
 
@@ -285,6 +288,8 @@
 }
 
 .mini-food-card {
+  display: flex;
+  flex-direction: column;
   border-radius: 28px;
   border: 1px solid rgba(23, 55, 57, 0.08);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 251, 250, 0.86));
@@ -313,6 +318,7 @@
 }
 
 .mini-food-card-body {
+  flex: 1;
   padding: 18px 18px 22px;
 }
 
