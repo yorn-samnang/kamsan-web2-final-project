@@ -792,6 +792,15 @@
   padding-top: 16px;
 }
 
+.dest-grid .dest-card > .trip-add-button {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  z-index: 4;
+  margin: 0;
+  white-space: nowrap;
+}
+
 /* Star-rating badge — bottom-right corner of the card image */
 .dest-rating {
   position: absolute;
@@ -2083,6 +2092,10 @@
 @media (max-width: 480px) {
   body {
     padding-top: 80px;
+  }
+
+  .dest-grid .dest-card > .trip-add-button {
+    bottom: 12px;
   }
 
   .nav-pill {

@@ -22,7 +22,7 @@ The application helps tourists explore Cambodian destinations, food, activities,
 - Tourist review CRUD using JSONPlaceholder (`GET`, `POST`, `PUT`, and `DELETE`)
 - Immediate search and filtering for destinations, food, and activities
 - Browser-persisted favorite destinations with `localStorage`
-- A trip planner where visitors can add, remove, and rearrange destinations and activities
+- A browser-saved trip planner where visitors can add or remove destinations, activities, and food, and see suggestions for selected destinations
 - An optional travel-recommendation quiz
 - Loading states, error messages, form validation, and accessible DOM updates
 
@@ -78,4 +78,4 @@ It verifies Prettier formatting, ESLint rules, and Jest tests. A pre-commit hook
 
 ## Project Status
 
-The static pages, search and filtering, current weather for four destinations, favorite destinations, and browser-saved tourist reviews are in place. Reviews use readable sample content and JSONPlaceholder for demo HTTP requests; they are not shared between visitors. The trip planner and optional quiz still need implementation. See `doc/Web-II-Proposal-Implementation-Status.md` for the detailed status.
+The static pages, search and filtering, current weather for four destinations, favorite destinations, browser-saved tourist reviews, and a basic browser-saved trip planner are in place. The planner uses curated suggestions for some destinations; the optional quiz still needs implementation. Reviews use readable sample content and JSONPlaceholder for demo HTTP requests; they are not shared between visitors. See `doc/Web-II-Proposal-Implementation-Status.md` for the detailed status.

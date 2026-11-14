@@ -1,4 +1,10 @@
+import { initTripPlannerControls } from './features/tripPlanner.js';
+import { initRecommendationQuiz } from './features/recommendationQuiz.js';
+
 document.addEventListener('DOMContentLoaded', () => {
+  initTripPlannerControls();
+  initRecommendationQuiz();
+
   const showReveal = (el) => {
     el.classList.add('in-view');
     el.classList.add('is-visible');
