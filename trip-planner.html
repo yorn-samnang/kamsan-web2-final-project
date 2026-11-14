@@ -38,25 +38,63 @@
       </div>
     </header>
     <main class="trip-planner">
-      <h1>My Trip</h1>
-      <p>Your saved trip is kept in this browser.</p>
-      <section aria-labelledby="trip-destinations-title">
+      <h1 class="reveal">My Trip</h1>
+      <p class="reveal">Your saved trip is kept in this browser.</p>
+      <section class="reveal" aria-labelledby="trip-destinations-title">
         <h2 id="trip-destinations-title">Destinations</h2>
         <div id="trip-destinations"></div>
       </section>
-      <section aria-labelledby="trip-activities-title">
+      <section class="reveal" aria-labelledby="trip-activities-title">
         <h2 id="trip-activities-title">Things to do</h2>
         <div id="trip-activities"></div>
       </section>
-      <section aria-labelledby="trip-food-title">
+      <section class="reveal" aria-labelledby="trip-food-title">
         <h2 id="trip-food-title">Food to try</h2>
         <div id="trip-food"></div>
       </section>
-      <section aria-labelledby="trip-suggestions-title">
+      <section class="reveal" aria-labelledby="trip-suggestions-title">
         <h2 id="trip-suggestions-title">Ideas for your destinations</h2>
         <div id="trip-suggestions"></div>
       </section>
     </main>
+    <footer class="site-footer">
+      <div class="footer-shell reveal">
+        <div class="footer-main">
+          <div class="footer-brand-block">
+            <p class="footer-eyebrow">Kamsan</p>
+            <h2 class="footer-title">Travel Cambodia with a calmer, clearer guide.</h2>
+            <p class="footer-summary">
+              Discover destinations, Khmer food, local experiences, and practical travel advice in
+              one warm, easy-to-use place.
+            </p>
+            <div class="footer-badges" aria-label="Kamsan highlights">
+              <span>Destinations</span>
+              <span>Khmer Food</span>
+              <span>Travel Tips</span>
+            </div>
+          </div>
+          <div class="footer-nav-block">
+            <p class="footer-label">Explore</p>
+            <nav class="footer-links" aria-label="Footer navigation">
+              <a href="index.html">Home</a>
+              <a href="destinations.html">Destinations</a>
+              <a href="food.html">Food</a>
+              <a href="things-to-do.html">Things to Do</a>
+              <a href="travel-guide.html">Travel Guide</a>
+              <a href="contact.html">About &amp; Contact</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>
+            2026 Kamsan. Created for the Web Development II final project at the American University
+            of Phnom Penh.
+          </p>
+          <a href="contact.html" class="btn btn-secondary footer-contact">Get in touch</a>
+        </div>
+      </div>
+    </footer>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/main-trip-planner.js"></script>
   </body>
