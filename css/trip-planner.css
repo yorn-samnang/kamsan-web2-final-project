@@ -27,6 +27,11 @@
   animation-delay: 0.16s;
 }
 
+.trip-planner.has-rendered .trip-item,
+.trip-planner.has-rendered .trip-suggestion {
+  animation: none;
+}
+
 .trip-item h3 {
   margin: 0 0 0.5rem;
 }

@@ -1,5 +1,5 @@
 import { getStoredValue, setStoredValue } from '../state/store.js';
-import { createElement, selectAll } from '../utils/dom.js';
+import { createElement, selectAll, toast } from '../utils/dom.js';
 import { tripRecommendations } from '../data/tripRecommendations.js';
 
 const STORAGE_KEY = 'kamsan:trip';
@@ -97,6 +97,13 @@ function refreshAddButtons(root = document) {
     const isAdded = list.some((item) => item.id === addButton.dataset.tripId);
     addButton.textContent = isAdded ? 'Added to My Trip' : 'Add to My Trip';
     addButton.setAttribute('aria-pressed', String(isAdded));
+    addButton.setAttribute(
+      'aria-label',
+      isAdded
+        ? `${addButton.dataset.tripName} is already in My Trip`
+        : `Add ${addButton.dataset.tripName} to My Trip`
+    );
+    addButton.disabled = isAdded;
   });
 
   const count = LISTS.reduce((total, list) => total + trip[list].length, 0);
@@ -108,10 +115,11 @@ function bindAddButton(addButton, item) {
   addButton.dataset.tripAdd = '';
   addButton.dataset.tripType = item.type;
   addButton.dataset.tripId = item.id;
+  addButton.dataset.tripName = item.name;
   addButton.addEventListener('click', () => {
     try {
       addItem(item);
-      showStatus(`${item.name} added to My Trip.`);
+      toast(`${item.name} added to My Trip!`, { duration: 3000 });
     } catch {
       showStatus('Your trip could not be saved in this browser.', true);
     }
@@ -212,7 +220,7 @@ function renderList(container, listName, trip) {
       button(
         'Remove',
         'trip-control-button',
-        () => removeItem(listName, item.id),
+        () => removeItem(listName, item.id, item.name),
         `Remove ${item.name}`
       )
     );
@@ -223,12 +231,13 @@ function renderList(container, listName, trip) {
   });
 }
 
-function removeItem(listName, id) {
+function removeItem(listName, id, name) {
   try {
     updateTrip((trip) => ({
       ...trip,
       [listName]: trip[listName].filter((item) => item.id !== id),
     }));
+    toast(`${name} removed from My Trip.`, { duration: 3000 });
   } catch {
     showStatus('Your trip could not be updated in this browser.', true);
   }
@@ -297,6 +306,7 @@ export function renderPlanner() {
         );
       }
     }
+    document.querySelector('.trip-planner')?.classList.add('has-rendered');
     refreshAddButtons();
   } catch {
     showStatus('Your trip could not be loaded from this browser.', true);
