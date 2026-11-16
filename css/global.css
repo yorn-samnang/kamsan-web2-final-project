@@ -333,7 +333,7 @@ body > header {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 8px 12px;
     padding: 14px;
     border-radius: 0;
@@ -341,10 +341,11 @@ body > header {
 
   header .brand-copy {
     grid-column: auto;
-    flex: 0 0 132px;
-    min-width: 132px;
-    width: 132px;
-    height: 42px;
+    flex: 0 0 270px;
+    min-width: 270px;
+    width: 270px;
+    height: 84px;
+    margin: 0 auto;
     background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
     text-align: left;
   }
@@ -386,7 +387,8 @@ body > header {
   }
 
   body .recommendation-quiz-trigger {
-    top: 140px;
+    top: 176px;
+    bottom: auto;
   }
 }
 
@@ -424,9 +426,9 @@ body > header {
 
   header .brand-copy {
     grid-column: 1;
-    min-width: 132px;
-    width: 132px;
-    height: 42px;
+    min-width: 246px;
+    width: 246px;
+    height: 78px;
     background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
     text-align: left;
   }
@@ -715,8 +717,13 @@ body > header {
 
 @media (max-width: 900px) {
   .recommendation-quiz-trigger {
-    top: 96px;
+    top: 120px;
+    bottom: auto;
     right: 14px;
+  }
+
+  body:has(.nav-pill.menu-open) .recommendation-quiz-trigger {
+    display: none;
   }
 
   .recommendation-quiz-panel {
