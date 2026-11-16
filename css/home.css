@@ -52,7 +52,7 @@ header {
 }
 
 .nav-shell {
-  max-width: 1220px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -190,12 +190,13 @@ header {
   justify-content: center;
   flex: 1;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   position: relative;
   z-index: 1;
 }
 
 .site-nav a {
+  white-space: nowrap;
   color: var(--text-nav);
   text-decoration: none;
   padding: 11px 16px;

@@ -119,7 +119,7 @@ header {
 }
 
 .nav-shell {
-  max-width: 1220px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -258,12 +258,13 @@ header {
   justify-content: center;
   flex: 1;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   position: relative;
   z-index: 1;
 }
 
 .site-nav a {
+  white-space: nowrap;
   color: var(--text-nav);
   text-decoration: none;
   padding: 11px 16px;
@@ -818,4 +819,43 @@ form textarea {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
+}
+
+/* Keep the full navigation on one line; use the menu when it no longer fits. */
+@media (max-width: 1280px) and (min-width: 901px) {
+  header .brand-mark {
+    display: none;
+  }
+
+  header .nav-pill {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-radius: 32px;
+  }
+
+  header .nav-toggle {
+    display: inline-flex;
+    grid-column: 2;
+  }
+
+  header .site-nav {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  header .nav-pill.menu-open .site-nav {
+    display: flex;
+  }
+
+  header .site-nav a {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.42);
+  }
 }
