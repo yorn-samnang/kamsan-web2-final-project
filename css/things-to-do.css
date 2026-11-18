@@ -8,7 +8,7 @@
    THINGS TO DO PAGE SPECIFIC STYLES
    ============================================================ */
 
-.hero-section {
+body > section.hero-section {
   height: 560px;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
@@ -20,7 +20,7 @@
   flex-direction: column;
   text-align: center;
   align-items: center;
-  padding: 4rem 2rem;
+  padding: 5rem 2rem 2rem;
   cursor: default;
 }
 
@@ -268,7 +268,7 @@
 }
 
 @media (max-width: 900px) {
-  .hero-section {
+  body > section.hero-section {
     margin: 0 20px;
     height: 360px;
   }
@@ -342,7 +342,7 @@
 }
 
 @media (max-width: 600px) {
-  .hero-section {
+  body > section.hero-section {
     margin: 0 30px;
     height: 360px;
   }
@@ -608,6 +608,61 @@
   padding: 48px 24px;
   color: #517476;
   font-size: 1.05rem;
+}
+
+html[data-theme='dark'] body .search-control,
+html[data-theme='dark'] body .category-filter {
+border-color: rgba(190, 218, 215, 0.16);
+background: #1b2b2d;
+box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='dark'] body .search-control input {
+border: 0 !important;
+background: transparent !important;
+box-shadow: none !important;
+color: #e4f0ed !important;
+}
+
+html[data-theme='dark'] body .filter-btn {
+border-color: rgba(190, 218, 215, 0.2);
+background: #263b3d;
+box-shadow: none;
+color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .filter-btn:is(:hover, :focus-visible) {
+border-color: rgba(190, 218, 215, 0.2);
+background: #263b3d;
+box-shadow: none;
+color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .filter-btn.active,
+html[data-theme='dark'] body .filter-btn.active:is(:hover, :focus-visible) {
+border-color: rgba(190, 218, 215, 0.24);
+background: #344f4e;
+box-shadow: none;
+color: #f0f7f5;
+}
+
+html[data-theme='dark'] body .place-card,
+html[data-theme='dark'] body .place-card.show:hover {
+border: 1px solid rgba(190, 218, 215, 0.16);
+background: #1b2b2d;
+box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='dark'] body .hero-button:not(.secondary),
+html[data-theme='dark'] body .hero-button:not(.secondary):is(:hover, :focus-visible) {
+border-color: rgba(190, 218, 215, 0.2);
+background: #263b3d;
+color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .hero-button.secondary:hover {
+background: transparent;
+color: #ffffff;
 }
 
 @media (max-width: 900px) {

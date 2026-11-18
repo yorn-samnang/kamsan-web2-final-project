@@ -1,9 +1,11 @@
 import { initTripPlannerControls } from './features/tripPlanner.js';
 import { initRecommendationQuiz } from './features/recommendationQuiz.js';
+import { initThemeToggle } from './features/themeToggle.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initTripPlannerControls();
   initRecommendationQuiz();
+  initThemeToggle();
 
   const showReveal = (el) => {
     el.classList.add('in-view');

@@ -57,6 +57,8 @@ export function initRecommendationQuiz() {
   }
 
   function renderQuestion() {
+    panel.style.height = '';
+    panel.scrollTop = 0;
     const question = recommendationQuestions[step];
     panel.replaceChildren(renderHeader());
     panel.append(
@@ -160,6 +162,7 @@ export function initRecommendationQuiz() {
   }
 
   function renderResults() {
+    const questionPanelHeight = panel.getBoundingClientRect().height;
     const results = getRecommendations(answers);
     panel.replaceChildren(renderHeader('Your Cambodia recommendations'));
     panel.append(
@@ -191,6 +194,8 @@ export function initRecommendationQuiz() {
     });
     footer.append(restartButton);
     panel.append(footer);
+    if (questionPanelHeight > 0) panel.style.height = `${questionPanelHeight}px`;
+    panel.scrollTop = 0;
     hasResults = true;
   }
 
