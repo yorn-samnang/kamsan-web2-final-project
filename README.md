@@ -8,13 +8,13 @@ The application helps tourists explore Cambodian destinations, food, activities,
 
 ## Pages
 
-- `index.html`  home page, trip planner, and optional recommendation quiz
-- `pages/destinations.html`  destination discovery, weather, search, and favorites
-- `pages/favorites.html`  saved favorite destinations
-- `pages/food.html`  Khmer food browsing and filtering
-- `pages/things-to-do.html`  activity discovery and filtering
-- `pages/travel-guide.html`  transport, timing, and practical visitor guidance
-- `pages/contact.html`  visitor contact and project information
+- `index.html` home page, trip planner, and optional recommendation quiz
+- `pages/destinations.html` destination discovery, weather, search, and favorites
+- `pages/favorites.html` saved favorite destinations
+- `pages/food.html` Khmer food browsing and filtering
+- `pages/things-to-do.html` activity discovery and filtering
+- `pages/travel-guide.html` transport, timing, and practical visitor guidance
+- `pages/contact.html` visitor contact and project information
 
 ## Planned Web II Features
 

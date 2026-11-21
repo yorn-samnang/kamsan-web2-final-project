@@ -30,7 +30,9 @@ test('adds a destination, shows suggestions, and adds a suggested activity', () 
   expect(trip.destinations.map((item) => item.name)).toEqual(['Phnom Penh']);
   expect(document.querySelector('[data-trip-count]').textContent).toBe('1');
   expect(document.querySelector('.site-nav [data-trip-link]')).toBeNull();
-  expect(document.querySelector('.trip-shortcut').getAttribute('href')).toBe('pages/trip-planner.html');
+  expect(document.querySelector('.trip-shortcut').getAttribute('href')).toBe(
+    'pages/trip-planner.html'
+  );
   expect(document.querySelector('.trip-shortcut').getAttribute('aria-label')).toBe(
     'My Trip, 1 item'
   );
