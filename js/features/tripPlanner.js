@@ -1,9 +1,22 @@
 import { getStoredValue, setStoredValue } from '../state/store.js';
-import { createElement, selectAll } from '../utils/dom.js';
+import { createElement, notify, selectAll } from '../utils/dom.js';
 import { tripRecommendations } from '../data/tripRecommendations.js';
 
 const STORAGE_KEY = 'kamsan:trip';
 const LISTS = ['destinations', 'activities', 'foods'];
+const TRIP_BUTTON_ICON = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <rect x="4.5" y="6.5" width="15" height="14" rx="2.5" />
+    <path d="M9 6.5V4.75c0-.69.56-1.25 1.25-1.25h3.5c.69 0 1.25.56 1.25 1.25V6.5" />
+    <path class="trip-icon-plus" d="M12 10v7m-3.5-3.5h7" />
+    <path class="trip-icon-check" d="m8.6 13.6 2.3 2.2 4.5-4.7" />
+  </svg>`;
+const TRIP_SHORTCUT_ICON = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <rect x="4.5" y="6.5" width="15" height="14" rx="2.5" />
+    <path d="M9 6.5V4.75c0-.69.56-1.25 1.25-1.25h3.5c.69 0 1.25.56 1.25 1.25V6.5" />
+    <path d="M9 13.5h6" />
+  </svg>`;
 
 function emptyTrip() {
   return { destinations: [], activities: [], foods: [] };
@@ -95,63 +108,99 @@ function refreshAddButtons(root = document) {
   selectAll('[data-trip-add]', root).forEach((addButton) => {
     const list = trip[getTypeList(addButton.dataset.tripType)];
     const isAdded = list.some((item) => item.id === addButton.dataset.tripId);
-    addButton.textContent = isAdded ? 'Added to My Trip' : 'Add to My Trip';
     addButton.setAttribute('aria-pressed', String(isAdded));
+    const label = isAdded
+      ? `Remove ${addButton.dataset.tripName} from My Trip`
+      : `Add ${addButton.dataset.tripName} to My Trip`;
+    addButton.setAttribute('aria-label', label);
+    addButton.title = label;
   });
 
   const count = LISTS.reduce((total, list) => total + trip[list].length, 0);
   const counter = document.querySelector('[data-trip-count]');
-  if (counter) counter.textContent = String(count);
+  if (counter) {
+    counter.textContent = String(count);
+    counter.hidden = count === 0;
+    counter
+      .closest('[data-trip-link]')
+      .setAttribute('aria-label', `My Trip, ${count} ${count === 1 ? 'item' : 'items'}`);
+  }
 }
 
 function bindAddButton(addButton, item) {
+  addButton.innerHTML = TRIP_BUTTON_ICON;
   addButton.dataset.tripAdd = '';
   addButton.dataset.tripType = item.type;
   addButton.dataset.tripId = item.id;
+  addButton.dataset.tripName = item.name;
   addButton.addEventListener('click', () => {
     try {
-      addItem(item);
-      showStatus(`${item.name} added to My Trip.`);
+      const added = toggleItem(item);
+      notify({
+        title: added ? 'Added to My Trip' : 'Removed from My Trip',
+        message: added ? `${item.name} is in your trip.` : `${item.name} was removed.`,
+        state: added ? 'success' : 'info',
+        duration: 3500,
+      });
     } catch {
-      showStatus('Your trip could not be saved in this browser.', true);
+      notify({
+        title: 'Trip not updated',
+        message: 'Your changes could not be saved in this browser.',
+        state: 'error',
+      });
     }
   });
 }
 
-function addItem(item) {
+function toggleItem(item) {
   const listName = getTypeList(item.type);
-  updateTrip((trip) => ({
-    ...trip,
-    [listName]: trip[listName].some((saved) => saved.id === item.id)
-      ? trip[listName]
-      : [...trip[listName], item],
-  }));
+  let added = false;
+  updateTrip((trip) => {
+    const wasAdded = trip[listName].some((saved) => saved.id === item.id);
+    added = !wasAdded;
+    return {
+      ...trip,
+      [listName]: wasAdded
+        ? trip[listName].filter((saved) => saved.id !== item.id)
+        : [...trip[listName], item],
+    };
+  });
+  return added;
 }
 
-function createNavLink() {
-  const nav = document.querySelector('.site-nav');
-  if (!nav || nav.querySelector('[data-trip-link]')) return;
+function createTripShortcut() {
+  if (document.querySelector('[data-trip-link]')) return;
+
+  const isInPages = window.location.pathname.includes('/pages/');
+  const tripPlannerHref = isInPages ? 'trip-planner.html' : 'pages/trip-planner.html';
 
   const link = createElement('a', {
-    attributes: { href: 'trip-planner.html', 'data-trip-link': '' },
-    text: 'My Trip ',
+    className: 'trip-shortcut',
+    attributes: {
+      href: tripPlannerHref,
+      'data-trip-link': '',
+      'aria-label': 'My Trip, 0 items',
+      title: 'My Trip',
+    },
   });
+  link.innerHTML = TRIP_SHORTCUT_ICON;
   const count = createElement('span', {
     className: 'trip-nav-count',
     dataset: { tripCount: '' },
-    attributes: { 'aria-label': 'items in your trip' },
+    attributes: { 'aria-hidden': 'true' },
     text: '0',
   });
+  count.hidden = true;
   link.append(count);
   if (window.location.pathname.endsWith('trip-planner.html')) {
     link.classList.add('active');
     link.setAttribute('aria-current', 'page');
   }
-  nav.append(link);
+  document.body.append(link);
 }
 
 export function initTripPlannerControls(root = document) {
-  createNavLink();
+  createTripShortcut();
   selectAll('[data-trip-destination]', root).forEach((addButton) => {
     const name = addButton.dataset.tripDestination.trim();
     const item = {
@@ -180,7 +229,6 @@ export function initTripPlannerControls(root = document) {
 
       const addButton = createElement('button', {
         className: 'trip-add-button',
-        text: 'Add to My Trip',
         attributes: { type: 'button', 'aria-label': `Add ${item.name} to My Trip` },
       });
       bindAddButton(addButton, item);
@@ -212,7 +260,7 @@ function renderList(container, listName, trip) {
       button(
         'Remove',
         'trip-control-button',
-        () => removeItem(listName, item.id),
+        () => removeItem(listName, item.id, item.name),
         `Remove ${item.name}`
       )
     );
@@ -223,14 +271,19 @@ function renderList(container, listName, trip) {
   });
 }
 
-function removeItem(listName, id) {
+function removeItem(listName, id, name) {
   try {
     updateTrip((trip) => ({
       ...trip,
       [listName]: trip[listName].filter((item) => item.id !== id),
     }));
+    notify({ title: 'Removed from My Trip', message: `${name} was removed.`, state: 'info' });
   } catch {
-    showStatus('Your trip could not be updated in this browser.', true);
+    notify({
+      title: 'Trip not updated',
+      message: 'Your changes could not be saved in this browser.',
+      state: 'error',
+    });
   }
 }
 
@@ -254,7 +307,6 @@ function renderSuggestions(container, destination, includeImages = false) {
       card.append(createElement('h4', { text: name }));
       const addButton = createElement('button', {
         className: 'trip-add-button',
-        text: 'Add to My Trip',
         attributes: { type: 'button', 'aria-label': `Add ${name} to My Trip` },
       });
       bindAddButton(addButton, item);
@@ -297,6 +349,7 @@ export function renderPlanner() {
         );
       }
     }
+    document.querySelector('.trip-planner')?.classList.add('has-rendered');
     refreshAddButtons();
   } catch {
     showStatus('Your trip could not be loaded from this browser.', true);

@@ -8,8 +8,11 @@
    - Animations
    ============================================================ */
 
+@import url('./weather.css');
+
 /* Design Tokens */
 :root {
+  color-scheme: light;
   --bg-page: #ffffff;
   --surface-border: rgba(255, 255, 255, 0.7);
   --text-strong: #173739;
@@ -83,16 +86,6 @@ iframe {
   }
 }
 
-@keyframes floatSoft {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
 .reveal {
   opacity: 0;
   transform: translateY(32px);
@@ -109,17 +102,17 @@ iframe {
 /* ============================================================
    HEADER & NAVIGATION
    ============================================================ */
-header {
+body > header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 22px 24px 12px;
+  padding: 20px 24px 12px;
   z-index: 1000;
 }
 
 .nav-shell {
-  max-width: 1440px;
+  max-width: 1220px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -142,7 +135,6 @@ header {
     0 12px 26px rgba(103, 139, 141, 0.14);
   overflow: hidden;
   isolation: isolate;
-  animation: floatSoft 5s ease-in-out infinite;
 }
 
 .brand-mark::before {
@@ -306,18 +298,221 @@ header {
   outline-offset: 2px;
 }
 
+@media (min-width: 901px) and (max-width: 1280px) {
+  html body {
+    padding-top: 0;
+  }
+
+  body header {
+    position: relative;
+    padding: 0;
+  }
+
+  header .nav-shell {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  header .brand-mark {
+    display: none;
+  }
+
+  header .nav-pill {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 14px;
+    border-radius: 0;
+  }
+
+  header .brand-copy {
+    grid-column: auto;
+    flex: 0 0 270px;
+    min-width: 270px;
+    width: 270px;
+    height: 84px;
+    margin: 0 auto;
+    background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
+    text-align: left;
+  }
+
+  header .brand-title {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-indent: -9999px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  header .brand-tagline {
+    display: none;
+  }
+
+  header .nav-toggle {
+    display: none;
+  }
+
+  header .site-nav {
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding-top: 0;
+  }
+
+  header .site-nav a {
+    width: auto;
+    padding: 11px 12px;
+    border-radius: 999px;
+    background: transparent;
+    text-align: center;
+  }
+
+  body .recommendation-quiz-trigger {
+    top: 176px;
+    bottom: auto;
+  }
+
+  body .theme-toggle {
+    top: 234px;
+  }
+
+  body .trip-shortcut {
+    top: 292px;
+  }
+
+  body .recommendation-quiz-panel {
+    top: 176px;
+    max-height: calc(100vh - 192px);
+  }
+}
+
+@media (max-width: 900px) {
+  html body {
+    padding-top: 0;
+  }
+
+  body header {
+    position: relative;
+    padding: 0;
+  }
+
+  header .nav-shell {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  header .brand-mark {
+    display: none;
+  }
+
+  header .nav-pill {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 0;
+  }
+
+  header .brand-copy {
+    grid-column: 1;
+    min-width: 246px;
+    width: 246px;
+    height: 78px;
+    background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
+    text-align: left;
+  }
+
+  header .brand-title {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-indent: -9999px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  header .brand-tagline {
+    display: none;
+  }
+
+  header .nav-toggle {
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header .site-nav {
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  header .nav-pill.menu-open .site-nav {
+    display: flex;
+  }
+
+  header .site-nav a {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.42);
+  }
+
+  header .nav-pill.menu-open .nav-toggle span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+  }
+
+  header .nav-pill.menu-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  header .nav-pill.menu-open .nav-toggle span:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+}
+
 .trip-nav-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
   display: inline-flex;
-  min-width: 1.25rem;
-  height: 1.25rem;
+  min-width: 18px;
+  height: 18px;
   align-items: center;
   justify-content: center;
-  margin-left: 4px;
-  padding: 0 4px;
+  padding: 0 3px;
   border-radius: 999px;
   background: #2e7c7e;
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.trip-nav-count[hidden] {
+  display: none;
 }
 
 .trip-add-button,
@@ -331,6 +526,37 @@ header {
   cursor: pointer;
 }
 
+.trip-add-button {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(23, 55, 57, 0.12);
+}
+
+.trip-add-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.trip-add-button .trip-icon-check,
+.trip-add-button[aria-pressed='true'] .trip-icon-plus {
+  display: none;
+}
+
+.trip-add-button[aria-pressed='true'] .trip-icon-check {
+  display: block;
+}
+
 .trip-add-button[aria-pressed='true'] {
   background: #e8f4ef;
 }
@@ -339,6 +565,119 @@ header {
 .trip-control-button:focus-visible {
   outline: 2px solid var(--accent-teal);
   outline-offset: 2px;
+}
+
+.toast-region {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: calc(100vw - 48px);
+  pointer-events: none;
+}
+
+.toast {
+  margin: 0;
+  padding: 14px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 250, 241, 0.96), rgba(229, 243, 240, 0.94));
+  color: var(--text-strong);
+  font-weight: 700;
+  box-shadow: 0 18px 40px rgba(28, 52, 54, 0.18);
+  animation: toast-in 0.3s ease-out;
+}
+
+.action-toast {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 24px;
+  align-items: start;
+  gap: 12px;
+  width: min(360px, calc(100vw - 48px));
+  padding: 15px;
+  border: 1px solid #dce9e6;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 52px rgba(13, 43, 44, 0.18);
+  color: #173739;
+  font-weight: 400;
+  pointer-events: auto;
+}
+
+.action-toast-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #e4f4ef;
+  color: #1b6a5e;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.action-toast[data-state='error'] .action-toast-icon {
+  background: #fff0ed;
+  color: #b64b43;
+}
+
+.action-toast[data-state='info'] .action-toast-icon {
+  background: #eaf2f7;
+  color: #426f88;
+}
+
+.action-toast-copy {
+  display: grid;
+  gap: 3px;
+  padding-top: 1px;
+}
+
+.action-toast-copy strong {
+  color: #173739;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.action-toast-copy span {
+  color: #567173;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.action-toast-dismiss {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #718b8b;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.action-toast-dismiss:hover,
+.action-toast-dismiss:focus-visible {
+  background: #edf4f2;
+  color: #173739;
+  outline-offset: 2px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dest-card > .trip-add-button,
@@ -366,6 +705,80 @@ header {
   font-size: 1.5rem;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 180px;
+  right: 24px;
+  z-index: 999;
+  display: grid;
+  min-width: 48px;
+  height: 48px;
+  place-items: center;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff, #e8f4ef);
+  color: var(--text-strong);
+  box-shadow: var(--shadow-glass);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 3px;
+}
+
+.trip-shortcut {
+  position: fixed;
+  top: 238px;
+  right: 24px;
+  z-index: 999;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff, #e8f4ef);
+  color: var(--text-strong);
+  box-shadow: var(--shadow-glass);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.trip-shortcut svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trip-shortcut:hover {
+  transform: translateY(-2px);
+}
+
+.trip-shortcut:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 3px;
+}
+
+.trip-shortcut[aria-current='page'] {
+  border-color: rgba(46, 124, 126, 0.45);
+  background: #e8f4ef;
 }
 
 .recommendation-quiz-trigger:hover {
@@ -379,13 +792,28 @@ header {
   outline-offset: 3px;
 }
 
+.recommendation-quiz-panel button:not(:disabled),
+.recommendation-quiz-result {
+  transition: transform 0.2s ease;
+}
+
+.recommendation-quiz-panel button:not(:disabled):hover,
+.recommendation-quiz-result:hover {
+  transform: translateY(-2px);
+}
+
+.recommendation-quiz-panel button:not(:disabled):active,
+.recommendation-quiz-result:active {
+  transform: translateY(0);
+}
+
 .recommendation-quiz-panel {
   position: fixed;
-  top: 180px;
-  right: 24px;
+  top: 122px;
+  right: 84px;
   z-index: 999;
-  width: min(27rem, calc(100vw - 2rem));
-  max-height: calc(100vh - 196px);
+  width: min(27rem, calc(100vw - 100px));
+  max-height: calc(100vh - 138px);
   overflow-y: auto;
   padding: 1.25rem;
   border: 1px solid #dce8e4;
@@ -521,6 +949,11 @@ header {
   text-decoration: none;
 }
 
+.recommendation-quiz-result span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .recommendation-quiz-result:hover {
   color: var(--accent-teal);
 }
@@ -535,20 +968,43 @@ header {
 
 @media (max-width: 900px) {
   .recommendation-quiz-trigger {
-    top: 96px;
+    top: 120px;
+    bottom: auto;
     right: 14px;
   }
 
+  body:has(.nav-pill.menu-open) .recommendation-quiz-trigger {
+    display: none;
+  }
+
+  .theme-toggle {
+    top: 176px;
+    right: 14px;
+  }
+
+  body:has(.nav-pill.menu-open) .theme-toggle {
+    display: none;
+  }
+
+  .trip-shortcut {
+    top: 234px;
+    right: 14px;
+  }
+
+  body:has(.nav-pill.menu-open) .trip-shortcut {
+    display: none;
+  }
+
   .recommendation-quiz-panel {
-    top: 152px;
-    right: 12px;
-    max-height: calc(100vh - 164px);
+    top: 120px;
+    right: 74px;
+    max-height: calc(100vh - 136px);
   }
 }
 
 @media (max-width: 640px) {
   .recommendation-quiz-panel {
-    width: calc(100vw - 24px);
+    width: calc(100vw - 90px);
     padding: 1rem;
   }
 }
@@ -556,6 +1012,32 @@ header {
 /* ============================================================
    COMMON SECTIONS & CONTAINERS
    ============================================================ */
+main > section.hero-section,
+body > section.hero-section,
+main > section.contact-hero,
+main > section.dest-hero,
+main > section.detail-hero,
+main > div.food-hero,
+main > section.travel-guide-hero {
+  width: calc(100% - 32px);
+  max-width: 1220px;
+  margin: 24px auto 0;
+  padding: 0;
+}
+
+@media (min-width: 901px) and (max-width: 1280px) {
+  main > section.hero-section,
+  body > section.hero-section,
+  main > section.contact-hero,
+  main > section.dest-hero,
+  main > section.detail-hero,
+  main > div.food-hero,
+  main > section.travel-guide-hero {
+    width: calc(100% - 64px);
+    max-width: 1160px;
+  }
+}
+
 section {
   max-width: 1220px;
   margin: 0 auto;
@@ -857,5 +1339,422 @@ form textarea {
     padding: 14px 16px;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.42);
+  }
+}
+
+/* Dark theme */
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-page: #101b1d;
+  --surface-border: rgba(190, 218, 215, 0.18);
+  --text-strong: #e4f0ed;
+  --text-body: rgba(228, 240, 237, 0.82);
+  --text-soft: rgba(205, 223, 219, 0.72);
+  --text-nav: #e0eeeb;
+  --accent-soft: #a4c3bf;
+  --accent-teal: #69b4ae;
+  --nav-hover-bg: rgba(143, 184, 178, 0.14);
+  --nav-active-bg: linear-gradient(180deg, rgba(53, 78, 77, 0.96), rgba(38, 67, 67, 0.9));
+  --nav-outline: rgba(190, 218, 215, 0.22);
+  --btn-text: #e4f0ed;
+  --btn-border: rgba(190, 218, 215, 0.22);
+  --btn-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+  --btn-shadow-hover: 0 18px 34px rgba(0, 0, 0, 0.3);
+  --btn-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --btn-focus-ring: rgba(129, 199, 191, 0.45);
+  --btn-primary-bg: linear-gradient(180deg, #344f4e, #263f40);
+  --btn-secondary-bg: linear-gradient(180deg, #263b3d, #1d3032);
+  --shadow-soft: 0 20px 45px rgba(0, 0, 0, 0.24);
+  --shadow-hover: 0 24px 50px rgba(0, 0, 0, 0.32);
+  --shadow-glass: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+html[data-theme='dark'] body {
+  color: #e4f0ed;
+  background:
+    radial-gradient(circle at top left, rgba(40, 89, 84, 0.22), transparent 25%),
+    radial-gradient(circle at top right, rgba(105, 78, 39, 0.14), transparent 25%),
+    linear-gradient(180deg, #101b1d 0%, #142426 48%, #101b1d 100%);
+}
+
+html[data-theme='dark'] body header .brand-mark {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: linear-gradient(180deg, #263b3d, #1b2b2d);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme='dark'] body header .brand-mark:hover {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: linear-gradient(180deg, #263b3d, #1b2b2d);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme='dark'] body header .brand-mark::before {
+  background: url('../images/travel-guide/kamsan-logo.png') center 48% / cover no-repeat;
+  filter: brightness(1.25) saturate(1.06) contrast(1.08);
+  mix-blend-mode: normal;
+}
+
+html[data-theme='dark'] body header .nav-pill::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent);
+}
+
+html[data-theme='dark'] body header .nav-pill::after {
+  background: radial-gradient(circle, rgba(105, 180, 174, 0.08), transparent 68%);
+}
+
+html[data-theme='dark'] body header .nav-toggle {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme='dark'] body header .nav-toggle span {
+  background: #e4f0ed;
+}
+
+html[data-theme='dark'] body header .site-nav a {
+  border-color: transparent;
+  background: transparent;
+  color: #e4f0ed;
+  box-shadow: none;
+}
+
+html[data-theme='dark'] body header .site-nav a:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: rgba(143, 184, 178, 0.12);
+  color: #f0f7f5;
+}
+
+html[data-theme='dark'] body header .site-nav a.active {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: linear-gradient(180deg, #344f4e, #263f40);
+  color: #f0f7f5;
+}
+
+@media (max-width: 900px) {
+  html[data-theme='dark'] body header .nav-pill.menu-open .site-nav a {
+    border-color: rgba(190, 218, 215, 0.2);
+    background: #263b3d;
+    color: #e4f0ed;
+  }
+
+  html[data-theme='dark'] body header .nav-pill.menu-open .site-nav a:is(:hover, :focus-visible) {
+    background: #263b3d;
+    color: #e4f0ed;
+  }
+
+  html[data-theme='dark'] body header .nav-pill.menu-open .site-nav a.active,
+  html[data-theme='dark']
+    body
+    header
+    .nav-pill.menu-open
+    .site-nav
+    a.active:is(:hover, :focus-visible) {
+    border-color: rgba(190, 218, 215, 0.24);
+    background: #344f4e;
+    color: #f0f7f5;
+  }
+}
+
+html[data-theme='dark']
+  body
+  :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    li,
+    a,
+    label,
+    small,
+    strong,
+    span,
+    dt,
+    dd,
+    legend,
+    figcaption,
+    blockquote
+  ) {
+  color: #e4f0ed !important;
+}
+
+html[data-theme='dark']
+  body
+  :is(
+    .nav-pill,
+    .recommendation-quiz-panel,
+    .recommendation-quiz-choice,
+    .recommendation-quiz-result,
+    .content-section,
+    .page-section,
+    .showcase-card,
+    .dest-card,
+    .food-photo-card,
+    .mini-food-card,
+    .contact-hero-content,
+    .contact-quick-info,
+    .hero-badges span,
+    .hero-highlights span,
+    .footer-shell,
+    .footer-nav-block,
+    .footer-badges span,
+    .footer-links a,
+    .info-card,
+    .contact-form,
+    .review-card,
+    .weather-card,
+    .trip-item,
+    .trip-suggestion,
+    .guide-anchor-nav,
+    .food-filter-results,
+    .search-panel,
+    .card
+  ) {
+  border-color: rgba(190, 218, 215, 0.16) !important;
+  background: #1b2b2d !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='dark'] body :is(input, textarea, select) {
+  border-color: rgba(190, 218, 215, 0.24) !important;
+  background: #142224 !important;
+  color: #e4f0ed !important;
+}
+
+html[data-theme='dark'] body :is(.trip-add-button, .trip-control-button) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark']
+  body
+  :is(.trip-add-button, .trip-control-button):is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .trip-add-button[aria-pressed='true'],
+html[data-theme='dark'] body .trip-add-button[aria-pressed='true']:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.28);
+  background: #344f4e;
+  color: #f0f7f5;
+}
+
+html[data-theme='dark'] body .toast {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .action-toast {
+  border-color: #3a5556;
+  background: #203436;
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.36);
+}
+
+html[data-theme='dark'] body .action-toast-icon {
+  background: #285149;
+  color: #a6e3c8 !important;
+}
+
+html[data-theme='dark'] body .action-toast[data-state='error'] .action-toast-icon {
+  background: #603a38;
+  color: #ffc0b5 !important;
+}
+
+html[data-theme='dark'] body .action-toast[data-state='info'] .action-toast-icon {
+  background: #294552;
+  color: #b5d7ea !important;
+}
+
+html[data-theme='dark'] body .action-toast-copy span {
+  color: #afc6c2 !important;
+}
+
+html[data-theme='dark'] body .action-toast-dismiss {
+  color: #afc6c2;
+}
+
+html[data-theme='dark'] body .action-toast-dismiss:is(:hover, :focus-visible) {
+  background: #2f494b;
+  color: #fff;
+}
+
+html[data-theme='dark'] body :is(input, textarea, select)::placeholder {
+  color: #9ab2ae;
+}
+
+html[data-theme='dark'] .theme-toggle {
+  border-color: rgba(190, 218, 215, 0.25);
+  background: linear-gradient(180deg, #263b3d, #1b2b2d);
+  color: #f0d27e;
+}
+
+html[data-theme='dark'] body .trip-shortcut,
+html[data-theme='dark'] body .trip-shortcut:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.25);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .trip-shortcut[aria-current='page'] {
+  background: #344f4e;
+}
+
+html[data-theme='dark'] .recommendation-quiz-trigger {
+  border-color: rgba(190, 218, 215, 0.25);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-trigger:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.25);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-trigger:focus-visible {
+  outline-color: #75c9b8;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-panel .recommendation-quiz-choice.selected,
+html[data-theme='dark']
+  body
+  .recommendation-quiz-panel
+  .recommendation-quiz-choice.selected:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.32) !important;
+  background: #344f4e !important;
+  color: #f0f7f5 !important;
+}
+
+html[data-theme='dark']
+  body
+  .recommendation-quiz-panel
+  .recommendation-quiz-choice:not(.selected):is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.24) !important;
+  background: #263b3d !important;
+  color: #e4f0ed !important;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-panel .recommendation-quiz-next,
+html[data-theme='dark']
+  body
+  .recommendation-quiz-panel
+  .recommendation-quiz-next:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.28);
+  background: #263b3d;
+  box-shadow: none;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark']
+  body
+  .recommendation-quiz-panel
+  .recommendation-quiz-next:is(:hover, :focus-visible) {
+  background: #344f4e;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-panel .recommendation-quiz-secondary,
+html[data-theme='dark']
+  body
+  .recommendation-quiz-panel
+  .recommendation-quiz-secondary:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  box-shadow: none;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .recommendation-quiz-panel .recommendation-quiz-result,
+html[data-theme='dark'] body .recommendation-quiz-panel .recommendation-quiz-result:hover {
+  border-color: rgba(190, 218, 215, 0.2) !important;
+  background: #263b3d !important;
+  box-shadow: none;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .home-hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(9, 22, 24, 0.94) 0%,
+      rgba(9, 22, 24, 0.82) 36%,
+      rgba(9, 22, 24, 0.48) 64%,
+      rgba(9, 22, 24, 0.22) 100%
+    ),
+    linear-gradient(180deg, rgba(9, 22, 24, 0.16), rgba(9, 22, 24, 0.46)),
+    url('../images/things-to-do/koh-rong-sanloem.png') center / cover no-repeat !important;
+}
+
+html[data-theme='dark'] body main > section.content-section.video-section,
+html[data-theme='dark'] body main > section.content-section.feature-collection {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-theme='dark'] body .footer-shell {
+  border-color: rgba(190, 218, 215, 0.16) !important;
+}
+
+html[data-theme='dark'] body .footer-shell::before {
+  background: rgba(190, 218, 215, 0.12);
+}
+
+html[data-theme='dark'] body .footer-shell::after {
+  background: radial-gradient(circle, rgba(201, 154, 62, 0.08), transparent 68%);
+}
+
+html[data-theme='dark'] body .footer-links a:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.24);
+  background: #2a4143;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+}
+
+html[data-theme='dark'] body .footer-contact:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.3);
+  background: #31484a;
+}
+
+html[data-theme='dark']
+  body
+  :is(.home-hero, .video-section, .feature-collection, .home-cta-strip)
+  :is(.btn-primary, .travel-link):hover {
+  border-color: var(--btn-border) !important;
+  background: var(--btn-primary-bg) !important;
+  box-shadow: var(--btn-highlight), var(--btn-shadow) !important;
+  color: var(--btn-text) !important;
+}
+
+html[data-theme='dark']
+  body
+  :is(.home-hero, .video-section, .feature-collection, .home-cta-strip)
+  .btn-secondary:hover {
+  border-color: var(--btn-border) !important;
+  background: var(--btn-secondary-bg) !important;
+  box-shadow: var(--btn-highlight), var(--btn-shadow) !important;
+  color: var(--btn-text) !important;
+}
+
+html[data-theme='dark'] body .feature-collection .showcase-card:hover {
+  border-color: rgba(190, 218, 215, 0.16) !important;
+  background: #1b2b2d !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2) !important;
+}
+
+@media (max-width: 640px) {
+  html[data-theme='dark'] body .home-hero {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(9, 22, 24, 0.9) 0%,
+        rgba(9, 22, 24, 0.76) 48%,
+        rgba(9, 22, 24, 0.52) 100%
+      ),
+      url('../images/travel-guide/travel-guide-hero.jpg') 60% center / cover no-repeat !important;
   }
 }

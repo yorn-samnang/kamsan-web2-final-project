@@ -83,6 +83,30 @@ export function toast(message, { duration = 4000, root = document } = {}) {
   return notification;
 }
 
+/** Shows the shared dismissible notification card. */
+export function notify({ title, message, state = 'success', duration = 4500 }) {
+  const notification = toast('', { duration });
+  notification.classList.add('action-toast');
+  notification.dataset.state = state;
+  notification.setAttribute('role', state === 'error' ? 'alert' : 'status');
+
+  const icon = createElement('span', {
+    className: 'action-toast-icon',
+    text: state === 'success' ? '✓' : state === 'error' ? '!' : '−',
+    attributes: { 'aria-hidden': 'true' },
+  });
+  const copy = createElement('span', { className: 'action-toast-copy' });
+  copy.append(createElement('strong', { text: title }), createElement('span', { text: message }));
+  const dismiss = createElement('button', {
+    className: 'action-toast-dismiss',
+    text: '×',
+    attributes: { type: 'button', 'aria-label': 'Dismiss notification' },
+  });
+  dismiss.addEventListener('click', () => notification.remove());
+  notification.append(icon, copy, dismiss);
+  return notification;
+}
+
 // Short aliases keep feature modules concise and match the project plan terminology.
 export const qs = select;
 export const qsa = selectAll;

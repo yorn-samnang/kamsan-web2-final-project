@@ -175,6 +175,22 @@
   text-align: center;
 }
 
+.quick-info-actions button.btn-primary,
+html[data-theme='dark'] body .quick-info-actions button.btn-primary {
+  border-color: #1b4b4d;
+  background: #1b4b4d;
+  box-shadow: none;
+  color: #fff;
+}
+
+.quick-info-actions button.btn-primary:is(:hover, :focus-visible),
+html[data-theme='dark'] body .quick-info-actions button.btn-primary:is(:hover, :focus-visible) {
+  border-color: #153e40;
+  background: #153e40;
+  box-shadow: none;
+  color: #fff;
+}
+
 .contact-grid-section {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -204,63 +220,110 @@
   line-height: 1.62;
 }
 
-.contact-form-section {
-  margin-top: 8px;
-  padding-top: 26px;
+.contact-modal {
+  width: min(480px, calc(100% - 32px));
+  max-height: min(760px, 86dvh);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow:
+    0 24px 72px rgba(5, 18, 20, 0.22),
+    0 2px 8px rgba(5, 18, 20, 0.08);
+  text-align: left;
 }
 
-.contact-form-header {
-  max-width: 760px;
-  margin-bottom: 16px;
+.contact-modal[open] {
+  display: flex;
+  flex-direction: column;
 }
 
-.contact-form-header h2 {
-  margin: 0 0 10px;
-  font-size: clamp(1.6rem, 3.1vw, 2.4rem);
-  color: #123738;
+.contact-modal::backdrop {
+  background: rgba(5, 18, 20, 0.5);
+  backdrop-filter: blur(10px);
 }
 
-.contact-form-header p {
+.contact-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid #f0f4f4;
+  flex-shrink: 0;
+}
+
+.contact-modal-header h2 {
   margin: 0;
-  color: rgba(23, 55, 57, 0.75);
-  line-height: 1.62;
+  color: #0f2628;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.contact-modal-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f6f6;
+  color: #4a6e70;
+  cursor: pointer;
+}
+
+.contact-modal-close:hover,
+.contact-modal-close:focus-visible {
+  background: #e4eded;
+  color: #0f2628;
+  outline-offset: 2px;
 }
 
 .contact-form {
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  border-radius: 28px;
-  padding: 28px;
-  background:
-    radial-gradient(circle at top right, rgba(173, 222, 218, 0.16), transparent 44%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(236, 247, 244, 0.8));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    0 22px 40px rgba(106, 140, 143, 0.12);
+  min-height: 0;
+  padding: 20px;
+  overflow-y: auto;
   display: grid;
-  gap: 16px;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #d4e4e4 transparent;
+}
+
+.contact-form-intro {
+  margin: 0 0 4px;
+  color: #517476;
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .field-row {
   display: grid;
-  gap: 8px;
+  gap: 5px;
 }
 
 .field-row label {
   font-weight: 600;
-  color: #163b3c;
-  font-size: 0.95rem;
+  color: #3d6163;
+  font-size: 0.78rem;
 }
 
 .field-row input,
 .field-row select,
 .field-row textarea {
   width: 100%;
-  border: 1px solid rgba(35, 67, 70, 0.18);
-  border-radius: 14px;
-  padding: 12px 14px;
-  font-size: 1rem;
-  color: #163738;
-  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid #e0eaeb;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #0f2628;
+  background: #f8fbfb;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -269,20 +332,108 @@
 
 .field-row textarea {
   resize: vertical;
-  min-height: 138px;
+  min-height: 80px;
 }
 
 .field-row input:focus,
 .field-row select:focus,
 .field-row textarea:focus {
   outline: none;
-  border-color: rgba(23, 55, 57, 0.4);
-  box-shadow: 0 0 0 4px rgba(23, 55, 57, 0.12);
+  border-color: #3a7375;
+  box-shadow: 0 0 0 3px rgba(58, 115, 117, 0.12);
   background: #fff;
 }
 
-.contact-form .btn {
-  justify-self: start;
+.contact-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.contact-form button.contact-submit {
+  flex: 0 0 auto;
+  min-height: 38px;
+  margin-left: auto;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #1b4b4d;
+  box-shadow: none;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    transform 0.14s ease;
+}
+
+.contact-form button.contact-submit:hover:not(:disabled),
+.contact-form button.contact-submit:focus-visible:not(:disabled) {
+  border: 0;
+  background: #153e40;
+  box-shadow: none;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.contact-form button.contact-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.contact-form-status {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+  font-size: 0.78rem;
+  color: #517476;
+}
+
+.contact-form-status:empty {
+  display: none;
+}
+
+.contact-form-status[data-state='error'] {
+  color: #a33c32;
+}
+
+html[data-theme='dark'] body .contact-form-status[data-state='error'] {
+  color: #ffb2a7 !important;
+}
+
+html[data-theme='dark'] body .contact-modal {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #142224;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .contact-modal-header {
+  border-color: rgba(190, 218, 215, 0.14);
+}
+
+html[data-theme='dark'] body .contact-modal .contact-form {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+html[data-theme='dark'] body .contact-form-intro,
+html[data-theme='dark'] body .contact-form-status {
+  color: #a9c1bd !important;
+}
+
+html[data-theme='dark'] body .contact-form button.contact-submit,
+html[data-theme='dark'] body .contact-form button.contact-submit:hover:not(:disabled) {
+  background: #1b4b4d;
+  color: #fff;
+}
+
+html[data-theme='dark'] body .contact-modal-close {
+  background: #263b3d;
+  color: #c1d5d1;
 }
 
 @media (max-width: 980px) {
@@ -421,8 +572,7 @@
   }
 
   .contact-hero-content,
-  .contact-quick-info,
-  .contact-form {
+  .contact-quick-info {
     padding: 20px;
     border-radius: 22px;
   }
@@ -435,7 +585,70 @@
     width: 100%;
   }
 
-  .contact-form .btn {
-    width: 100%;
+  .contact-modal {
+    max-height: 94dvh;
+    border-radius: 20px;
   }
+
+  .contact-modal-header,
+  .contact-form {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+html[data-theme='dark'] body .quick-info-item {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #263b3d;
+}
+
+html[data-theme='dark'] body .contact-quick-info::before {
+  background: radial-gradient(circle, rgba(105, 180, 174, 0.08), transparent 70%);
+}
+
+html[data-theme='dark'] body .btn-primary:is(:hover, :focus-visible) {
+  border-color: var(--btn-border);
+  background: var(--btn-primary-bg);
+  box-shadow: var(--btn-highlight), var(--btn-shadow);
+  color: var(--btn-text);
+}
+
+html[data-theme='dark'] body .btn-secondary:is(:hover, :focus-visible),
+html[data-theme='dark'] body .footer-contact:is(:hover, :focus-visible) {
+  border-color: var(--btn-border);
+  background: var(--btn-secondary-bg);
+  box-shadow: var(--btn-highlight), var(--btn-shadow);
+  color: var(--btn-text);
+}
+
+html[data-theme='dark'] body header .site-nav a:not(.active):is(:hover, :focus-visible) {
+  border-color: transparent;
+  background: transparent;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body header .site-nav a.active:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: linear-gradient(180deg, #344f4e, #263f40);
+  color: #f0f7f5;
+}
+
+html[data-theme='dark'] body .field-row select {
+  color-scheme: dark;
+}
+
+html[data-theme='dark'] body .field-row select option {
+  background: #142224;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .field-row select option:is(:hover, :checked) {
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .site-footer .footer-links a:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #1b2b2d !important;
+  color: #e4f0ed;
 }

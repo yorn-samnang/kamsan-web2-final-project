@@ -158,6 +158,30 @@ function toast(message, { duration = 4000, root = document } = {}) {
   return notification;
 }
 
+/** Shows the shared dismissible notification card. */
+function notify({ title, message, state = 'success', duration = 4500 }) {
+  const notification = toast('', { duration });
+  notification.classList.add('action-toast');
+  notification.dataset.state = state;
+  notification.setAttribute('role', state === 'error' ? 'alert' : 'status');
+
+  const icon = createElement('span', {
+    className: 'action-toast-icon',
+    text: state === 'success' ? '✓' : state === 'error' ? '!' : '−',
+    attributes: { 'aria-hidden': 'true' },
+  });
+  const copy = createElement('span', { className: 'action-toast-copy' });
+  copy.append(createElement('strong', { text: title }), createElement('span', { text: message }));
+  const dismiss = createElement('button', {
+    className: 'action-toast-dismiss',
+    text: '×',
+    attributes: { type: 'button', 'aria-label': 'Dismiss notification' },
+  });
+  dismiss.addEventListener('click', () => notification.remove());
+  notification.append(icon, copy, dismiss);
+  return notification;
+}
+
 // Short aliases keep feature modules concise and match the project plan terminology.
 const qs = select;
 const qsa = selectAll;
@@ -483,7 +507,11 @@ function openReviewModal({
   document.body.style.overflow = 'hidden';
 
   activeModalClose = closeModal;
-  nameInput.focus();
+  if (window.matchMedia?.('(pointer: coarse)').matches) {
+    panel.focus();
+  } else {
+    nameInput.focus();
+  }
 
   if (focusReviews) {
     requestAnimationFrame(() => listSection.scrollIntoView({ behavior: 'smooth' }));
@@ -936,9 +964,12 @@ function attachTooltipHover(badge, tip) {
     const height = tip.offsetHeight;
     const left = Math.min(
       Math.max(8, badgeRect.right - width),
-      Math.max(8, window.innerWidth - width - 8)
+      Math.max(8, document.documentElement.clientWidth - width - 8)
     );
-    const top = badgeRect.top >= height + 16 ? badgeRect.top - height - 8 : badgeRect.bottom + 8;
+    const preferredTop =
+      badgeRect.top >= height + 16 ? badgeRect.top - height - 8 : badgeRect.bottom + 8;
+    const viewportHeight = window.visualViewport?.height || document.documentElement.clientHeight;
+    const top = Math.max(8, Math.min(preferredTop, viewportHeight - height - 8));
     tip.style.left = `${left}px`;
     tip.style.top = `${top}px`;
   };
@@ -959,6 +990,8 @@ function attachTooltipHover(badge, tip) {
       tip.classList.remove('is-visible');
       tip.setAttribute('aria-hidden', 'true');
       badge.append(tip);
+      tip.style.left = '';
+      tip.style.top = '';
       document.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('scroll', position);
       window.removeEventListener('resize', position);

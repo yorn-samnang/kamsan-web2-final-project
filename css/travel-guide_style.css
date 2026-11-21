@@ -621,11 +621,18 @@
 }
 
 .food-photo-card {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border-radius: 28px;
   border: 1px solid rgba(23, 55, 57, 0.08);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 251, 250, 0.86));
   box-shadow: var(--shadow-soft);
+}
+
+.food-photo-card > .trip-add-button {
+  align-self: center;
+  margin: 0.75rem;
 }
 
 .food-photo-card img {
@@ -1252,4 +1259,119 @@
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+html[data-theme='dark'] body .jump-links-shell,
+html[data-theme='dark'] body .season-image-card,
+html[data-theme='dark'] body .visual-transport-card,
+html[data-theme='dark'] body .logo-app-card,
+html[data-theme='dark'] body .payment-photo-card,
+html[data-theme='dark'] body .culture-card,
+html[data-theme='dark'] body .mini-tip-card,
+html[data-theme='dark'] body .food-photo-card,
+html[data-theme='dark'] body .tip-item {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #1b2b2d;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='dark'] body .guide-anchor-nav a {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  box-shadow: none;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .guide-anchor-nav a:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  box-shadow: none;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .season-photo-wrap,
+html[data-theme='dark'] body .transport-photo-wrap,
+html[data-theme='dark'] body .app-logo-wrap,
+html[data-theme='dark'] body .payment-photo-wrap,
+html[data-theme='dark'] body .culture-photo-wrap {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #263b3d;
+}
+
+html[data-theme='dark'] body .payment-points span {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .tip-item summary {
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .tip-item summary::after {
+  color: #a9c1bd;
+}
+
+html[data-theme='dark'] body .btn-secondary,
+html[data-theme='dark'] body .footer-contact,
+html[data-theme='dark'] body .trip-add-button {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .btn-secondary:is(:hover, :focus-visible),
+html[data-theme='dark'] body .footer-contact:is(:hover, :focus-visible),
+html[data-theme='dark']
+  body
+  .trip-add-button:not([aria-pressed='true']):is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .trip-add-button[aria-pressed='true'],
+html[data-theme='dark'] body .trip-add-button[aria-pressed='true']:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.28);
+  background: #344f4e;
+  color: #f0f7f5;
+}
+
+html[data-theme='dark'] body .btn-primary:is(:hover, :focus-visible) {
+  border-color: rgba(35, 79, 81, 0.8);
+  background: linear-gradient(180deg, rgba(35, 79, 81, 0.98), rgba(24, 58, 60, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 18px 34px rgba(18, 46, 48, 0.24);
+  color: #ffffff;
+}
+
+html[data-theme='dark'] body header .site-nav a:not(.active):is(:hover, :focus-visible) {
+  border-color: transparent;
+  background: transparent;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body header .site-nav a.active:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: linear-gradient(180deg, #344f4e, #263f40);
+  color: #f0f7f5;
+}
+
+html[data-theme='dark'] body .site-footer .footer-links a:is(:hover, :focus-visible) {
+  border-color: rgba(190, 218, 215, 0.16);
+  background: #1b2b2d !important;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body .toast {
+  border-color: rgba(190, 218, 215, 0.2);
+  background: #263b3d;
+  color: #e4f0ed;
+}
+
+html[data-theme='dark'] body main > section.content-section {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }

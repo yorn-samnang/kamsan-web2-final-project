@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { getStoredValue, setStoredValue } from '../js/state/store.js';
 import { initTripPlannerControls, renderPlanner } from '../js/features/tripPlanner.js';
 
@@ -17,6 +18,10 @@ beforeEach(() => {
   `;
 });
 
+afterEach(() => {
+  jest.useRealTimers();
+});
+
 test('adds a destination, shows suggestions, and adds a suggested activity', () => {
   initTripPlannerControls();
   document.querySelector('[data-trip-add]').click();
@@ -24,21 +29,59 @@ test('adds a destination, shows suggestions, and adds a suggested activity', () 
   const trip = getStoredValue('kamsan:trip', {});
   expect(trip.destinations.map((item) => item.name)).toEqual(['Phnom Penh']);
   expect(document.querySelector('[data-trip-count]').textContent).toBe('1');
+  expect(document.querySelector('.site-nav [data-trip-link]')).toBeNull();
+  expect(document.querySelector('.trip-shortcut').getAttribute('href')).toBe('pages/trip-planner.html');
+  expect(document.querySelector('.trip-shortcut').getAttribute('aria-label')).toBe(
+    'My Trip, 1 item'
+  );
   expect(document.querySelector('.trip-destination-suggestions')).toBeNull();
 
   renderPlanner();
   expect(document.querySelector('#trip-suggestions').textContent).toContain('Royal Palace');
   expect(document.querySelector('#trip-suggestions img').getAttribute('src')).toBe(
-    'images/destinations/phnom-penh-royal-palace.png'
+    '../images/destinations/phnom-penh-royal-palace.png'
   );
   document.querySelector('#trip-suggestions .trip-add-button').click();
 
   expect(getStoredValue('kamsan:trip', {}).activities.map((item) => item.name)).toEqual([
     'Royal Palace',
   ]);
-  expect(document.querySelector('[data-trip-id="activity:royal-palace"]').textContent).toBe(
+  expect(document.querySelector('.toast-region').textContent).toContain(
+    'Royal Palace is in your trip.'
+  );
+  const savedButton = document.querySelector('[data-trip-id="activity:royal-palace"]');
+  expect(savedButton.getAttribute('aria-pressed')).toBe('true');
+  expect(savedButton.querySelector('.trip-icon-check')).not.toBeNull();
+});
+
+test('toggles a destination in and out of My Trip with matching notifications', () => {
+  jest.useFakeTimers();
+  initTripPlannerControls();
+
+  const addButton = document.querySelector('[data-trip-add]');
+  addButton.click();
+
+  expect(addButton.disabled).toBe(false);
+  expect(addButton.getAttribute('aria-pressed')).toBe('true');
+  expect(addButton.getAttribute('aria-label')).toBe('Remove Phnom Penh from My Trip');
+  expect(addButton.title).toBe('Remove Phnom Penh from My Trip');
+  expect(addButton.querySelector('svg').getAttribute('aria-hidden')).toBe('true');
+  expect(document.querySelector('[data-trip-status]')).toBeNull();
+  expect(document.querySelector('.action-toast[data-state="success"] strong').textContent).toBe(
     'Added to My Trip'
   );
+
+  addButton.click();
+  expect(getStoredValue('kamsan:trip', {}).destinations).toHaveLength(0);
+  expect(addButton.getAttribute('aria-pressed')).toBe('false');
+  expect(addButton.getAttribute('aria-label')).toBe('Add Phnom Penh to My Trip');
+  expect(document.querySelector('[data-trip-count]').hidden).toBe(true);
+  expect(document.querySelector('.action-toast[data-state="info"] strong').textContent).toBe(
+    'Removed from My Trip'
+  );
+
+  jest.advanceTimersByTime(3500);
+  expect(document.querySelector('.toast')).toBeNull();
 });
 
 test('adds Phnom Penh from a destination page without showing recommendations there', () => {
@@ -54,6 +97,9 @@ test('adds Phnom Penh from a destination page without showing recommendations th
   expect(getStoredValue('kamsan:trip', {}).destinations.map((item) => item.name)).toEqual([
     'Phnom Penh',
   ]);
+  expect(document.querySelector('.action-toast').textContent).toContain(
+    'Phnom Penh is in your trip.'
+  );
 });
 
 test('adds food from both food card styles using the shared trip button', () => {
@@ -79,6 +125,12 @@ test('adds food from both food card styles using the shared trip button', () => 
     'Fish Amok',
     'Palm Juice',
   ]);
+  expect(document.querySelector('.toast-region').textContent).toContain(
+    'Fish Amok is in your trip.'
+  );
+  expect(document.querySelector('.toast-region').textContent).toContain(
+    'Palm Juice is in your trip.'
+  );
 });
 
 test('shows no reorder controls and removes planned destinations', () => {
@@ -102,4 +154,5 @@ test('shows no reorder controls and removes planned destinations', () => {
   expect(getStoredValue('kamsan:trip', {}).destinations.map((item) => item.name)).toEqual([
     'Kampot',
   ]);
+  expect(document.querySelector('.action-toast').textContent).toContain('Kep was removed.');
 });

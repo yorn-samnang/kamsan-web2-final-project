@@ -10,6 +10,7 @@ test('asks three questions and recommends website destinations, activities, and 
   const trigger = document.querySelector('[data-recommendation-quiz-trigger]');
   trigger.click();
   const panel = document.querySelector('[data-recommendation-quiz]');
+  panel.getBoundingClientRect = () => ({ height: 480 });
   expect(panel.textContent).toContain('Question 1 of 3');
   expect(panel.textContent).toContain('What kind of place are you in the mood for?');
 
@@ -24,9 +25,13 @@ test('asks three questions and recommends website destinations, activities, and 
   expect(panel.textContent).toContain('Preah Sihanouk');
   expect(panel.textContent).toContain('Koh Rong');
   expect(panel.textContent).toContain('Fish Amok');
+  expect(panel.style.height).toBe('480px');
   expect(
     [...panel.querySelectorAll('a')].every((link) => !link.getAttribute('href').startsWith('http'))
   ).toBe(true);
+
+  panel.querySelector('.recommendation-quiz-secondary').click();
+  expect(panel.style.height).toBe('');
 });
 
 test('closes the quiz with Escape and preserves the selected answer when reopened', () => {

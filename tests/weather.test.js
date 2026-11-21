@@ -1,4 +1,4 @@
-import { getWeatherDescription, initWeather } from '../js/features/weather.js';
+import { getWeatherDescription, initWeather, initWeatherPanel } from '../js/features/weather.js';
 
 const currentWeather = {
   destination: 'Phnom Penh',
@@ -78,5 +78,34 @@ describe('weather feature', () => {
   test('maps Open-Meteo weather codes to readable labels', () => {
     expect(getWeatherDescription(95)).toBe('Thunderstorm');
     expect(getWeatherDescription(999)).toBe('Unknown conditions');
+  });
+
+  test('opens weather from the fixed shortcut and closes it with Escape', async () => {
+    document.body.innerHTML = '';
+    const requested = [];
+    const getWeather = async (destinationId) => {
+      requested.push(destinationId);
+      return currentWeather;
+    };
+    const panelController = initWeatherPanel({ getWeather });
+    const panel = document.querySelector('[data-weather]');
+    const trigger = document.querySelector('[data-weather-trigger]');
+
+    expect(panel.hidden).toBe(true);
+    expect(requested).toHaveLength(0);
+
+    trigger.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(panel.hidden).toBe(false);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(requested).toEqual(['banteay-meanchey']);
+    expect(panel.textContent).toContain('Partly cloudy');
+    expect(panel.querySelectorAll('[data-weather-destination] option')).toHaveLength(25);
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(panel.hidden).toBe(true);
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(trigger);
+    panelController.destroy();
   });
 });

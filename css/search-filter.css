@@ -97,6 +97,10 @@
   display: none;
 }
 
+.things-filter-results[hidden] {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .things-filter-results > .place-card {
     max-width: calc((100% - 24px) / 2);
@@ -157,6 +161,10 @@
 }
 
 .food-filter-results > [hidden] {
+  display: none;
+}
+
+.food-filter-results[hidden] {
   display: none;
 }
 

@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Favorite Destinations - Kamsan</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="css/destinations.css" />
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <script src="../js/theme-preload.js"></script>
+    <link rel="stylesheet" href="../css/destinations.css" />
+    <link rel="stylesheet" href="../css/theme-control.css" />
   </head>
   <body>
     <header>
       <div class="nav-shell">
-        <a href="index.html" class="brand-mark" aria-label="Kamsan home"></a>
+        <a href="../index.html" class="brand-mark" aria-label="Kamsan home"></a>
         <div class="nav-pill">
           <div class="brand-copy">
-            <a href="index.html" class="brand-title">Kamsan</a>
+            <a href="../index.html" class="brand-title">Kamsan</a>
             <span class="brand-tagline">Cambodia Travel Guide</span>
           </div>
           <button
@@ -26,7 +28,7 @@
             <span></span><span></span><span></span>
           </button>
           <nav class="site-nav" id="site-nav" aria-label="Main navigation">
-            <a href="index.html">Home</a>
+            <a href="../index.html">Home</a>
             <a href="destinations.html" class="active">Destinations</a>
             <a href="food.html">Food</a>
             <a href="things-to-do.html">Things to Do</a>
@@ -57,7 +59,8 @@
       <div id="favorites-list" class="dest-grid"></div>
     </main>
     <div id="favorite-toast" class="favorite-toast" role="status" aria-live="polite" hidden></div>
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/main-favorites.js"></script>
+    <script type="module" src="../js/theme.js"></script>
+    <script type="module" src="../js/main.js"></script>
+    <script type="module" src="../js/main-favorites.js"></script>
   </body>
 </html>

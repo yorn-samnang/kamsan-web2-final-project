@@ -1,9 +1,11 @@
 import { initTripPlannerControls } from './features/tripPlanner.js';
 import { initRecommendationQuiz } from './features/recommendationQuiz.js';
+import { initWeatherPanel } from './features/weather.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initTripPlannerControls();
   initRecommendationQuiz();
+  initWeatherPanel();
 
   const showReveal = (el) => {
     el.classList.add('in-view');
