@@ -1092,7 +1092,7 @@ form button:not(.nav-toggle):focus-visible {
 
   .hero-actions {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
 
@@ -1100,6 +1100,11 @@ form button:not(.nav-toggle):focus-visible {
   .showcase-card .btn,
   .video-copy .btn {
     width: 100%;
+  }
+
+  .hero-highlights span {
+    font-size: 0.75rem;
+    padding: 7px 10px;
   }
 
   .showcase-card {
