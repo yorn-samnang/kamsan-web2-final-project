@@ -1096,7 +1096,15 @@ form button:not(.nav-toggle):focus-visible {
     gap: 10px;
   }
 
-  .hero-actions .btn,
+  .hero-actions .btn {
+    width: 100%;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    white-space: normal;
+    text-align: center;
+    min-height: 52px;
+  }
+
   .showcase-card .btn,
   .video-copy .btn {
     width: 100%;
