@@ -578,11 +578,18 @@ html[data-theme='dark'] body .contact-modal-close {
   }
 
   .quick-info-actions {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .quick-info-actions .btn {
     width: 100%;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    white-space: normal;
+    text-align: center;
+    min-height: 52px;
   }
 
   .contact-modal {
