@@ -1987,6 +1987,27 @@
   }
 }
 
+@media (max-width: 640px) {
+  .region-filter {
+    gap: 6px;
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .region-filter .filter-label {
+    flex-basis: 100%;
+    margin-right: 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+
+  .region-filter .filter-btn {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+}
+
 @media (max-width: 480px) {
   body {
     padding-top: 80px;

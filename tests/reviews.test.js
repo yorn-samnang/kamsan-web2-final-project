@@ -116,6 +116,31 @@ describe('tourist reviews', () => {
     expect(document.querySelector('body > .dest-rating-tip')).toBeNull();
   });
 
+  test('rating details stay open when crossing the gap from the stars to the popup', async () => {
+    document.body.innerHTML =
+      '<section class="detail-hero" data-destination="Phnom Penh"></section>';
+    initDetailRating();
+
+    const badge = document.querySelector('.dest-rating--detail');
+    badge.dispatchEvent(new Event('mouseenter'));
+    const tip = document.querySelector('body > .dest-rating-tip');
+
+    badge.dispatchEvent(new MouseEvent('mouseleave', { relatedTarget: document.body }));
+    document.body.dispatchEvent(new Event('pointermove', { bubbles: true }));
+    document.body.dispatchEvent(new Event('pointermove', { bubbles: true }));
+    tip.dispatchEvent(new Event('mouseenter'));
+    await new Promise((resolve) => setTimeout(resolve, 110));
+
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).toBe(tip);
+    tip.querySelector('.drt-action-post').click();
+    expect(document.querySelector('.review-modal-overlay')).not.toBeNull();
+    document.querySelector('.rmo-close').click();
+
+    document.body.dispatchEvent(new Event('pointermove', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 110));
+    expect(document.querySelector('body > .dest-rating-tip.is-visible')).toBeNull();
+  });
+
   test('rating details reopen after closing the review dialog', async () => {
     document.body.innerHTML =
       '<section class="detail-hero" data-destination="Phnom Penh"></section>';

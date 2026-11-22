@@ -3,6 +3,18 @@ import { initRecommendationQuiz } from './features/recommendationQuiz.js';
 import { initWeatherPanel } from './features/weather.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const header = document.querySelector('body > header');
+  if (header) {
+    const updateHeaderHeight = () => {
+      document.documentElement.style.setProperty(
+        '--header-height',
+        `${header.getBoundingClientRect().height}px`
+      );
+    };
+    updateHeaderHeight();
+    new window.ResizeObserver(updateHeaderHeight).observe(header);
+  }
+
   initTripPlannerControls();
   initRecommendationQuiz();
   initWeatherPanel();
@@ -15,6 +27,54 @@ document.addEventListener('DOMContentLoaded', () => {
   /* 1. MOBILE NAV TOGGLE */
   const navToggle = document.querySelector('.nav-toggle');
   const navPill = document.querySelector('.nav-pill');
+
+  if (header) {
+    const mobileNav = window.matchMedia('(max-width: 900px)');
+    let previousScroll = Math.max(0, window.scrollY);
+    let scrollDirection = 0;
+    let scrollDistance = 0;
+
+    const showNav = () => {
+      header.classList.remove('nav-hidden');
+      scrollDistance = 0;
+    };
+
+    const updateNavVisibility = () => {
+      const currentScroll = Math.max(
+        0,
+        Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight)
+      );
+      const delta = currentScroll - previousScroll;
+      previousScroll = currentScroll;
+
+      if (
+        !mobileNav.matches ||
+        currentScroll <= 100 ||
+        navPill?.classList.contains('menu-open') ||
+        header.querySelector(':focus-visible')
+      ) {
+        showNav();
+        return;
+      }
+
+      if (!delta) return;
+      const direction = Math.sign(delta);
+      if (direction !== scrollDirection) scrollDistance = 0;
+      scrollDirection = direction;
+      scrollDistance += Math.abs(delta);
+
+      if (direction > 0 && scrollDistance >= 24) header.classList.add('nav-hidden');
+      if (direction < 0 && scrollDistance >= 12) showNav();
+    };
+
+    window.addEventListener('scroll', updateNavVisibility, { passive: true });
+    mobileNav.addEventListener('change', () => {
+      previousScroll = Math.max(0, window.scrollY);
+      showNav();
+    });
+    header.addEventListener('focusin', showNav);
+    navToggle?.addEventListener('click', showNav);
+  }
 
   if (navToggle && navPill) {
     navToggle.addEventListener('click', () => {

@@ -47,6 +47,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height, 108px) + 24px);
+}
+
+html body {
+  padding-top: var(--header-height, 108px);
 }
 
 body {
@@ -300,11 +305,11 @@ body > header {
 
 @media (min-width: 901px) and (max-width: 1280px) {
   html body {
-    padding-top: 0;
+    padding-top: var(--header-height, 162px);
   }
 
   body header {
-    position: relative;
+    position: fixed;
     padding: 0;
   }
 
@@ -400,12 +405,19 @@ body > header {
 
 @media (max-width: 900px) {
   html body {
-    padding-top: 0;
+    padding-top: var(--header-height, 108px);
   }
 
   body header {
-    position: relative;
+    position: fixed;
     padding: 0;
+    max-height: 100dvh;
+    overflow-y: auto;
+    transition: transform 0.22s ease;
+  }
+
+  body > header.nav-hidden {
+    transform: translateY(-100%);
   }
 
   header .nav-shell {
@@ -432,10 +444,12 @@ body > header {
 
   header .brand-copy {
     grid-column: 1;
-    min-width: 246px;
-    width: 246px;
+    min-width: 78px;
+    width: 78px;
     height: 78px;
-    background: url('../images/travel-guide/kamsan-logo.png') center / contain no-repeat;
+    margin: 0;
+    justify-self: start;
+    background: url('../images/travel-guide/kamsan-logo.png') center / 120px 120px no-repeat;
     text-align: left;
   }
 
@@ -457,6 +471,9 @@ body > header {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
   }
 
   header .site-nav {
@@ -1199,6 +1216,38 @@ form button:not(.nav-toggle):focus-visible {
   border-color: rgba(206, 228, 224, 0.92);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  body > header {
+    transition: none;
+  }
+}
+
+/* Compact footer on mobile screens. */
+@media (max-width: 640px) {
+  .site-footer .footer-nav-block {
+    display: none;
+  }
+
+  .site-footer .footer-badges {
+    gap: 6px;
+  }
+
+  .site-footer .footer-badges span {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: clamp(0.68rem, 2vw, 0.78rem);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .site-footer .footer-badges span {
+    padding: 0 8px;
+  }
+}
+
 /* ============================================================
    FORMS
    ============================================================ */
@@ -1722,7 +1771,7 @@ html[data-theme='dark'] body .footer-contact:is(:hover, :focus-visible) {
 
 html[data-theme='dark']
   body
-  :is(.home-hero, .video-section, .feature-collection, .home-cta-strip)
+  :is(.video-section, .feature-collection, .home-cta-strip)
   :is(.btn-primary, .travel-link):hover {
   border-color: var(--btn-border) !important;
   background: var(--btn-primary-bg) !important;

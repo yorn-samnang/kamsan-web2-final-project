@@ -1,5 +1,6 @@
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+  { ignores: ['js/destination-detail.bundle.js'] },
   {
     files: ['js/**/*.js'],
     languageOptions: {

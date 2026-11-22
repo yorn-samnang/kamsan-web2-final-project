@@ -954,8 +954,14 @@ function buildRatingBadge({ name, ratings, isInLink = false, showTooltip = true 
 function attachTooltipHover(badge, tip) {
   let hideTimer = null;
 
+  const cancelHide = () => {
+    window.clearTimeout(hideTimer);
+    hideTimer = null;
+  };
+
   const onPointerMove = (e) => {
-    if (!badge.contains(e.target) && !tip.contains(e.target)) hide();
+    if (badge.contains(e.target) || tip.contains(e.target)) cancelHide();
+    else hide();
   };
 
   const position = () => {
@@ -975,7 +981,7 @@ function attachTooltipHover(badge, tip) {
   };
 
   const show = () => {
-    window.clearTimeout(hideTimer);
+    cancelHide();
     if (tip.parentElement !== document.body) document.body.append(tip);
     tip.classList.add('is-visible');
     position();
@@ -986,7 +992,11 @@ function attachTooltipHover(badge, tip) {
   };
 
   const hide = () => {
+    // Mouseleave and pointermove can fire together while crossing the gap.
+    // Keep one timer so entering the popup cancels every pending dismissal.
+    if (hideTimer !== null) return;
     hideTimer = window.setTimeout(() => {
+      hideTimer = null;
       tip.classList.remove('is-visible');
       tip.setAttribute('aria-hidden', 'true');
       badge.append(tip);
@@ -1000,7 +1010,7 @@ function attachTooltipHover(badge, tip) {
 
   ratingTooltips.set(badge, {
     close() {
-      window.clearTimeout(hideTimer);
+      cancelHide();
       document.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('scroll', position);
       window.removeEventListener('resize', position);
@@ -1018,7 +1028,7 @@ function attachTooltipHover(badge, tip) {
     if (!tip.contains(e.relatedTarget)) hide();
   });
 
-  tip.addEventListener('mouseenter', () => window.clearTimeout(hideTimer));
+  tip.addEventListener('mouseenter', cancelHide);
   tip.addEventListener('mouseleave', (e) => {
     if (!badge.contains(e.relatedTarget)) hide();
   });
