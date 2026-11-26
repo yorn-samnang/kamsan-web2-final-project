@@ -115,7 +115,7 @@ const foodItems = {
   ],
 };
 
-export function getRecommendations(answers, pagesPrefix = '') {
+export function getRecommendations(answers, pagesPrefix = '', imagePrefix = '') {
   const requiredAnswers = ['setting', 'activity', 'food'];
   if (!requiredAnswers.every((key) => Object.hasOwn(answers, key))) {
     throw new Error('All recommendation quiz questions must be answered.');
@@ -131,19 +131,19 @@ export function getRecommendations(answers, pagesPrefix = '') {
   return {
     destinations: destinationsForSetting.map((name) => ({
       name,
-      image: `${pagesPrefix}${destinations[name].image}`,
+      image: `${imagePrefix}${destinations[name].image}`,
       href: destinations[name].href
         ? `${pagesPrefix}${destinations[name].href}`
         : `${pagesPrefix}destinations.html#destinations-grid`,
     })),
     activities: activitiesForPreference.map((item) => ({
       ...item,
-      image: `${pagesPrefix}${item.image}`,
+      image: `${imagePrefix}${item.image}`,
       href: `${pagesPrefix}things-to-do.html#things-to-do-grid`,
     })),
     foods: foodsForPreference.map((item) => ({
       ...item,
-      image: `${pagesPrefix}${item.image}`,
+      image: `${imagePrefix}${item.image}`,
       href: `${pagesPrefix}food.html#food-to-try`,
     })),
   };

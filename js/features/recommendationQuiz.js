@@ -163,8 +163,10 @@ export function initRecommendationQuiz() {
 
   function renderResults() {
     const questionPanelHeight = panel.getBoundingClientRect().height;
-    const pagesPrefix = window.location.pathname.includes('/pages/') ? '' : 'pages/';
-    const results = getRecommendations(answers, pagesPrefix);
+    const isInPagesDirectory = window.location.pathname.includes('/pages/');
+    const pagesPrefix = isInPagesDirectory ? '' : 'pages/';
+    const imagePrefix = isInPagesDirectory ? '../' : '';
+    const results = getRecommendations(answers, pagesPrefix, imagePrefix);
     panel.replaceChildren(renderHeader('Your Cambodia recommendations'));
     panel.append(
       createElement('p', {
